@@ -4,6 +4,9 @@ chrome.action.onClicked.addListener((tab) => {
 
 let localBlocklist = [];
 
+chrome.runtime.onInstalled.addListener(clearBlocklist);
+chrome.runtime.onStartup.addListener(clearBlocklist);
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "updateBlocklist") {
     switch (message.action) {
@@ -20,6 +23,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // Indicates an asynchronous response
   }
 });
+
+function clearBlocklist() {
+  chrome.storage.local.clear(() => {
+    console.log("Local blocklist has been cleared upon reload/startup.");
+  });
+  chrome.storage.sync.clear(() => {
+    console.log("Local blocklist has been cleared upon reload/startup.");
+  });
+
+  // clear all the rules
+  chrome.declarativeNetRequest.getDynamicRules((rules) => {
+    const ruleIds = rules.map((rule) => rule.id);
+    chrome.declarativeNetRequest.updateDynamicRules(
+      {
+        removeRuleIds: ruleIds,
+      },
+      () => {
+        if (chrome.runtime.lastError) {
+          console.error("Failed to remove rules:", chrome.runtime.lastError);
+        } else {
+          console.log("All dynamic rules have been cleared.");
+        }
+      }
+    );
+  });
+}
 
 // Add URL to local storage
 function addUrlToLocalBlocklist(url, callback) {
@@ -66,7 +95,12 @@ function fetchLocalBlocklist(callback) {
 
 // Function to dynamically add a blocking rule
 function addDynamicRule(url) {
-  const ruleId = generateUniqueId(url);
+  const domain = new URL(url).hostname;
+  const ruleId = generateUniqueId(domain);
+
+  // Modify the pattern to include all subdomains and protocols
+  const pattern = `*://*.${new URL(url).hostname}/*`;
+
   const rule = {
     id: ruleId, // Ensuring the ID is a manageable integer size
     priority: 1,
@@ -75,7 +109,7 @@ function addDynamicRule(url) {
       redirect: { url: "http://localhost:8000/softblock.html" },
     },
     condition: {
-      urlFilter: url,
+      urlFilter: pattern,
       resourceTypes: ["main_frame"],
     },
   };
@@ -100,7 +134,8 @@ function addDynamicRule(url) {
 
 // Function to remove a dynamic rule
 function removeDynamicRule(url) {
-  const ruleId = generateUniqueId(url); // Generate the unique ID consistently
+  const domain = new URL(url).hostname;
+  const ruleId = generateUniqueId(domain);
   chrome.declarativeNetRequest.updateDynamicRules(
     {
       removeRuleIds: [ruleId],
@@ -111,15 +146,15 @@ function removeDynamicRule(url) {
   );
 }
 
-// Helper function to generate a unique ID for each rule based on the URL
-function generateUniqueId(url) {
+// This helper function generates a unique ID based on the domain of the URL
+function generateUniqueId(domain) {
   let hash = 0;
-  for (let i = 0; i < url.length; i++) {
-    const char = url.charCodeAt(i);
+  for (let i = 0; i < domain.length; i++) {
+    const char = domain.charCodeAt(i);
     hash = (hash << 5) - hash + char;
     hash |= 0; // Convert to 32bit integer
   }
-  return Math.abs(hash); // Use absolute value to avoid negative IDs
+  return Math.abs(hash);
 }
 
 // // Get blocklist from server upon startup
