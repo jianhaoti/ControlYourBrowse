@@ -95,11 +95,16 @@ function fetchLocalBlocklist(callback) {
 
 // Function to dynamically add a blocking rule
 function addDynamicRule(url) {
-  const domain = new URL(url).hostname;
-  const ruleId = generateUniqueId(domain);
+  const urlObj = new URL(url);
+  let baseDomain = urlObj.hostname;
 
-  // Modify the pattern to include all subdomains and protocols
-  const pattern = `*://*.${new URL(url).hostname}/*`;
+  // If the domain starts with 'www.', strip it for broader matching
+  if (baseDomain.startsWith("www.")) {
+    baseDomain = baseDomain.substring(4);
+  }
+
+  const pattern = `*://*.${baseDomain}/*`; // Matches all subdomains
+  const ruleId = generateUniqueId(baseDomain);
 
   const rule = {
     id: ruleId, // Ensuring the ID is a manageable integer size
@@ -134,8 +139,16 @@ function addDynamicRule(url) {
 
 // Function to remove a dynamic rule
 function removeDynamicRule(url) {
-  const domain = new URL(url).hostname;
-  const ruleId = generateUniqueId(domain);
+  const urlObj = new URL(url);
+  let baseDomain = urlObj.hostname;
+
+  // If the domain starts with 'www.', strip it for broader matching
+  if (baseDomain.startsWith("www.")) {
+    baseDomain = baseDomain.substring(4);
+  }
+
+  const ruleId = generateUniqueId(baseDomain);
+
   chrome.declarativeNetRequest.updateDynamicRules(
     {
       removeRuleIds: [ruleId],
@@ -146,11 +159,11 @@ function removeDynamicRule(url) {
   );
 }
 
-// This helper function generates a unique ID based on the domain of the URL
-function generateUniqueId(domain) {
+// This helper function generates a unique ID based on the  the URL
+function generateUniqueId(baseDomain) {
   let hash = 0;
-  for (let i = 0; i < domain.length; i++) {
-    const char = domain.charCodeAt(i);
+  for (let i = 0; i < baseDomain.length; i++) {
+    const char = baseDomain.charCodeAt(i);
     hash = (hash << 5) - hash + char;
     hash |= 0; // Convert to 32bit integer
   }
