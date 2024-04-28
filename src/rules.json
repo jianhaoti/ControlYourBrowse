@@ -4,7 +4,7 @@
     "priority": 1,
     "action": {
       "type": "redirect",
-      "redirect": { "url": "https://github.com" }
+      "redirect": { "url": "http://localhost:8000/softblock.html" }
     },
     "condition": {
       "urlFilter": "youtube.com",

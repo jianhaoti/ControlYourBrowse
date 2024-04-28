@@ -4,19 +4,23 @@
   "version": "1.0",
   "permissions": [
     "declarativeNetRequest",
-    "declarativeNetRequestWithHostAccess"
+    "declarativeNetRequestWithHostAccess",
+    "storage"
   ],
+  "host_permissions": ["<all_urls>"],
+  "declarative_net_request": {
+    "rule_resources": []
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "options_page": "options.html",
   "background": {
     "service_worker": "background.js"
   },
-  "host_permissions": ["<all_urls>"],
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "ruleset1",
-        "enabled": true,
-        "path": "rules.json"
-      }
-    ]
-  }
+  "action": {}
 }

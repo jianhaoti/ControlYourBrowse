@@ -1,16 +1,22 @@
-const CopyPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 const path = require("path");
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: {
+    background: "./src/background.js", // Background script
+    content: "./src/content.js", // Content script
+    options: "./src/options.js", // Options script, if you have separate JS for options
+  },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "bundle.js",
+    filename: "[name].js",
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "./src/index.html",
+      template: "./src/options.html",
+      filename: "options.html",
+      chunks: ["options"], // Include only 'options' chunk if you have specific JS for options page
     }),
     new CopyPlugin({
       patterns: [
@@ -39,13 +45,5 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".jsx"],
-  },
-  entry: {
-    background: "./src/background.js", // Path to background script
-    bundle: "./src/index.js",
-  },
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "[name].js", // This will output 'background.js' and 'bundle.js'
   },
 };
