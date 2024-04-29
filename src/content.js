@@ -1,7 +1,10 @@
-const url = window.location.href;
-const visitTime = new Date().toISOString();
-
-// Store the captured data using Chrome storage API
-chrome.storage.session.set({ lastVisit: { url, time: visitTime } }, () => {
-  console.log("URL and timestamp have been stored in session storage.");
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+  if (message.type === "interceptedURL") {
+    console.log("Received intercepted URL from background:", message.url);
+    // Process the intercepted URL
+    document.getElementById(
+      "interceptedUrl"
+    ).textContent = `Intercepted URL: ${message.url}`;
+  }
+  // You can add more conditions for other types of messages here
 });
