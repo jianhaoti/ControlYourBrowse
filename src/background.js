@@ -3,7 +3,7 @@ chrome.action.onClicked.addListener((tab) => {
 });
 
 let localBlocklist = [];
-
+let domainNames = [];
 // chrome.runtime.onInstalled.addListener(clearBlocklist);
 // chrome.runtime.onStartup.addListener(clearBlocklist);
 
@@ -52,30 +52,46 @@ function clearBlocklist() {
 
 // Add URL to local storage
 function addUrlToLocalBlocklist(url, callback) {
-  chrome.storage.local.get({ blocklist: [] }, function (data) {
+  chrome.storage.local.get({ blocklist: [], domainNames: [] }, function (data) {
     let blocklist = data.blocklist;
+    let domainNames = new Set(data.domainNames);
+    const baseDomain = getBaseDomain(new URL(url));
 
-    if (blocklist.indexOf(url) === -1) {
-      blocklist.push(url);
-      chrome.storage.local.set({ blocklist: blocklist }, () => {
-        addDynamicRule(url);
-        callback({ status: "Blocklist updated", blocklist: blocklist });
-      });
+    console.log(domainNames, baseDomain);
+
+    if (!domainNames.has(baseDomain)) {
+      if (blocklist.indexOf(url) === -1) {
+        blocklist.push(url);
+        domainNames.add(baseDomain);
+        chrome.storage.local.set(
+          { blocklist: blocklist, domainNames: Array.from(domainNames) },
+          () => {
+            addDynamicRule(url);
+            callback({ status: "Blocklist updated", blocklist: blocklist });
+          }
+        );
+      }
     }
   });
 }
 
 // Remove URL from local storage
 function removeUrlFromLocalBlocklist(url, callback) {
-  chrome.storage.local.get({ blocklist: [] }, function (data) {
+  chrome.storage.local.get({ blocklist: [], domainNames: [] }, function (data) {
     let blocklist = data.blocklist;
+    let domainNames = new Set(data.domainNames);
+    const baseDomain = getBaseDomain(new URL(url));
     const index = blocklist.indexOf(url);
     if (index > -1) {
       blocklist.splice(index, 1);
-      chrome.storage.local.set({ blocklist: blocklist }, () => {
-        removeDynamicRule(url);
-        callback({ status: "Blocklist updated", blocklist: blocklist });
-      });
+      domainNames.delete(baseDomain);
+      chrome.storage.local.set(
+        { blocklist: blocklist, domainNames: Array.from(domainNames) },
+        () => {
+          removeDynamicRule(url);
+          callback({ status: "Blocklist updated", blocklist: blocklist });
+        }
+      );
     }
   });
 }
