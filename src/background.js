@@ -96,18 +96,15 @@ function fetchLocalBlocklist(callback) {
   });
 }
 
-// Function to dynamically add a blocking rule
 function addDynamicRule(url) {
   const urlObj = new URL(url);
   let baseDomain = urlObj.hostname;
-  const subDomain = baseDomain.split(".")[0]; // doesn't include the "."
+  let subDomain = baseDomain.split(".")[0];
 
-  // If the subdomain is 'www', strip it for broader matching
-  if (subDomain === "www") {
-    baseDomain = baseDomain.substring(4);
-  }
   // Generate the unique rule ID based on the domain
   const ruleId = generateUniqueId(baseDomain);
+
+  // Define the general block rule
   const rule = {
     id: ruleId,
     priority: 1,
@@ -121,40 +118,38 @@ function addDynamicRule(url) {
     },
   };
 
-  const allowMusic = {
-    id: ruleId + 1,
-    priority: 2,
-    action: {
-      type: "allow",
-    },
-    condition: {
-      urlFilter: `*://music.${baseDomain}/*`,
-      resourceTypes: ["main_frame"],
-    },
-  };
-
-  // Update rules dynamically
+  // Apply the general rule
   chrome.declarativeNetRequest.updateDynamicRules({
-    removeRuleIds: [ruleId],
     addRules: [rule],
   });
 
-  // allow music
-  // if (subDomain.includes("music.")) {
-  //   chrome.declarativeNetRequest.updateDynamicRules({
-  //     removeRuleIds: [ruleId + 1],
-  //     addRules: [allowMusic],
-  //   });
-  // }
+  // Define and apply the allow rule for 'music.' subdomain if applicable
+  if (baseDomain.includes("music")) {
+    const allowMusic = {
+      id: ruleId + 1,
+      priority: 2,
+      action: {
+        type: "allow",
+      },
+      condition: {
+        urlFilter: `*://music.${baseDomain}/*`,
+        resourceTypes: ["main_frame"],
+      },
+    };
+
+    chrome.declarativeNetRequest.updateDynamicRules({
+      addRules: [allowMusic],
+    });
+  }
 }
 
 // Function to remove a dynamic rule
 function removeDynamicRule(url) {
   const urlObj = new URL(url);
   let baseDomain = urlObj.hostname;
-  const subDomain = baseDomain.split(".")[0];
 
-  if (subDomain === "www") {
+  // If the domain starts with 'www.', strip it for broader matching
+  if (baseDomain.startsWith("www.")) {
     baseDomain = baseDomain.substring(4);
   }
 
