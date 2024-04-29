@@ -5,7 +5,7 @@ chrome.action.onClicked.addListener((tab) => {
 let localBlocklist = [];
 
 chrome.runtime.onInstalled.addListener(clearBlocklist);
-chrome.runtime.onStartup.addListener(clearBlocklist);
+// chrome.runtime.onStartup.addListener(clearBlocklist);
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "updateBlocklist") {
@@ -15,6 +15,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         break;
       case "remove":
         removeUrlFromLocalBlocklist(message.url, sendResponse);
+        break;
+      case "clear":
+        clearBlocklist();
         break;
       case "fetch":
         fetchLocalBlocklist(sendResponse);
