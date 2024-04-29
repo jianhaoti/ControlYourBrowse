@@ -1,4 +1,52 @@
-// Valid URL checker
+// Function to handle global clicks
+function handleGlobalClick(event) {
+  const { target } = event;
+
+  if (target.id === "addButton") {
+    const urlInput = document.getElementById("websiteInput");
+    const url = urlInput.value.trim();
+    if (url && isValidUrl(url)) {
+      chrome.runtime.sendMessage(
+        { type: "updateBlocklist", action: "add", url },
+        displayBlocklist
+      );
+    } else {
+      alert("Please enter a valid URL.");
+      urlInput.focus();
+    }
+  } else if (target.id === "removeButton") {
+    const selected = document.querySelector("#blocklistDisplay .selected");
+    if (selected) {
+      chrome.runtime.sendMessage(
+        {
+          type: "updateBlocklist",
+          action: "remove",
+          url: selected.textContent,
+        },
+        displayBlocklist
+      );
+    }
+  } else if (target.closest("#blocklistDisplay li")) {
+    // Assuming deselectAll is defined elsewhere
+    deselectAll();
+    target.classList.add("selected");
+    document.getElementById("removeButton").disabled = false;
+  } else if (
+    target.id === "fullClearButton" &&
+    confirm("Are you sure you want to clear all settings and data?")
+  ) {
+    chrome.runtime.sendMessage({ action: "clearBlocklist" });
+  } else if (!target.closest("#websiteInput")) {
+    deselectAll();
+  }
+}
+
+// Ensure the listener is added only once using a flag
+if (!window.globalClickListenerAdded) {
+  document.addEventListener("click", handleGlobalClick);
+  window.globalClickListenerAdded = true;
+}
+
 function isValidUrl(urlString) {
   try {
     new URL(urlString);
@@ -8,90 +56,30 @@ function isValidUrl(urlString) {
   }
 }
 
-document.getElementById("addButton").addEventListener("click", () => {
-  const urlInput = document.getElementById("websiteInput");
-  const url = urlInput.value.trim();
-  if (url && isValidUrl(url)) {
-    chrome.runtime.sendMessage(
-      { type: "updateBlocklist", action: "add", url },
-      displayBlocklist
-    );
-  } else {
-    alert("Please enter a valid URL.");
-    urlInput.focus(); // Focus the input field for the user to correct it
-  }
-});
-
-// gloabl click listener to clear selection
-// unless user clicks a url in the block list
-// or inputting a new url
-document.addEventListener("click", (event) => {
-  if (
-    !event.target.closest("#blocklistDisplay li") &&
-    !event.target.closest("#websiteInput")
-  ) {
-    deselectAll();
-  }
-});
-
-const removeButton = document.getElementById("removeButton");
-removeButton.addEventListener("click", () => {
-  const selected = document.querySelector("#blocklistDisplay .selected");
-  if (selected) {
-    // send message to background.js for local and server blocklist updates
-    chrome.runtime.sendMessage(
-      { type: "updateBlocklist", action: "remove", url: selected.textContent },
-      displayBlocklist
-    );
-  }
-});
-
 function displayBlocklist(response) {
   const listElement = document.getElementById("blocklistDisplay");
-  listElement.innerHTML = ""; // Clear current list
+  listElement.innerHTML = "";
   response.blocklist.forEach((site) => {
     const listItem = document.createElement("li");
     listItem.textContent = site;
-    listItem.addEventListener("click", function (event) {
-      // Prevent the document-level click handler from firing
-      event.stopPropagation();
-      deselectAll();
-
-      // Remove 'selected' class from previously selected item, if any
-      const previousSelected = document.querySelector(
-        "#blocklistDisplay .selected"
-      );
-      if (previousSelected) {
-        previousSelected.classList.remove("selected");
-      }
-      listItem.classList.add("selected");
-      removeButton.disabled = false; // Enable the remove button when an item is selected
-    });
     listElement.appendChild(listItem);
   });
 }
 
-// Deselect all items
 function deselectAll() {
-  const previouslySelected = document.querySelector(
+  const selectedItems = document.querySelectorAll(
     "#blocklistDisplay .selected"
   );
-  if (previouslySelected) {
-    previouslySelected.classList.remove("selected");
-  }
-  removeButton.disabled = true; // Disable the remove button when nothing is selected
+  selectedItems.forEach((item) => {
+    item.classList.remove("selected");
+  });
+  document.getElementById("removeButton").disabled = true;
 }
 
-// On load, fetch the current blocklist
+// Optional: If you need to re-check when the DOM is fully loaded or re-initialized
 document.addEventListener("DOMContentLoaded", () => {
-  chrome.runtime.sendMessage(
-    { type: "updateBlocklist", action: "fetch" },
-    function (response) {
-      if (response && response.blocklist) {
-        displayBlocklist(response);
-      } else {
-        console.error("Failed to fetch blocklist", response);
-      }
-    }
-  );
+  if (!window.globalClickListenerAdded) {
+    document.addEventListener("click", handleGlobalClick);
+    window.globalClickListenerAdded = true;
+  }
 });
