@@ -8,66 +8,68 @@ function isValidUrl(urlString) {
   }
 }
 
-document.getElementById("addButton").addEventListener("click", () => {
-  const urlInput = document.getElementById("websiteInput");
-  const url = urlInput.value.trim();
-  if (url && isValidUrl(url)) {
-    chrome.runtime.sendMessage(
-      { type: "updateBlocklist", action: "add", url },
-      displayBlocklist
-    );
-  } else {
-    alert("Please enter a valid URL.");
-    urlInput.focus(); // Focus the input field for the user to correct it
-  }
-});
-
-// gloabl click listener to clear selection
-// unless user clicks a url in the block list
-// or inputting a new url
-document.addEventListener("click", (event) => {
-  if (
-    !event.target.closest("#blocklistDisplay li") &&
-    !event.target.closest("#websiteInput")
-  ) {
-    deselectAll();
-  }
-});
+const addButton = document.getElementById("addButton");
+if (!addButton.hasClickListener) {
+  addButton.addEventListener("click", () => {
+    const urlInput = document.getElementById("websiteInput");
+    const url = urlInput.value.trim();
+    if (url && isValidUrl(url)) {
+      chrome.runtime.sendMessage(
+        { type: "updateBlocklist", action: "add", url },
+        displayBlocklist
+      );
+    } else {
+      alert("Please enter a valid URL.");
+      urlInput.focus(); // Focus the input field for the user to correct it
+    }
+  });
+  addButton.hasClickListener = true; // Set a flag that you've added the listener
+}
 
 const removeButton = document.getElementById("removeButton");
-removeButton.addEventListener("click", () => {
-  const selected = document.querySelector("#blocklistDisplay .selected");
-  if (selected) {
-    // send message to background.js for local and server blocklist updates
-    chrome.runtime.sendMessage(
-      { type: "updateBlocklist", action: "remove", url: selected.textContent },
-      displayBlocklist
-    );
-  }
-});
+if (!removeButton.hasClickListener) {
+  removeButton.addEventListener("click", () => {
+    const selected = document.querySelector("#blocklistDisplay .selected");
+    if (selected) {
+      // send message to background.js for local and server blocklist updates
+      chrome.runtime.sendMessage(
+        {
+          type: "updateBlocklist",
+          action: "remove",
+          url: selected.textContent,
+        },
+        displayBlocklist
+      );
+    }
+  });
+  removeButton.hasClickListener = true; // Set a flag that you've added the listener
+}
 
 const clearAllButton = document.getElementById("clearAllButton");
-clearAllButton.addEventListener("click", () => {
-  // Ask for user confirmation
-  if (
-    confirm(
-      "Are you sure you want to clear all settings and data? This action cannot be undone."
-    )
-  ) {
-    // Clear the UI immediately
-    const listElement = document.getElementById("blocklistDisplay");
-    listElement.innerHTML = "";
+if (!clearAllButton.hasClickListener) {
+  clearAllButton.addEventListener("click", () => {
+    // Ask for user confirmation
+    if (
+      confirm(
+        "Are you sure you want to clear all settings and data? This action cannot be undone."
+      )
+    ) {
+      // Clear the UI immediately
+      const listElement = document.getElementById("blocklistDisplay");
+      listElement.innerHTML = "";
 
-    // Send message to background.js to clear storage and dynamic rules
-    chrome.runtime.sendMessage(
-      { type: "updateBlocklist", action: "clear" },
-      () => {
-        console.log("Blocklist cleared in storage and rules reset.");
-        // Optionally, handle any callbacks here if necessary
-      }
-    );
-  }
-});
+      // Send message to background.js to clear storage and dynamic rules
+      chrome.runtime.sendMessage(
+        { type: "updateBlocklist", action: "clear" },
+        () => {
+          console.log("Blocklist cleared in storage and rules reset.");
+          // Optionally, handle any callbacks here if necessary
+        }
+      );
+    }
+  });
+  clearAllButton.hasClickListener = true; // Set a flag that you've added the listener
+}
 
 function displayBlocklist(response) {
   const listElement = document.getElementById("blocklistDisplay");
@@ -117,4 +119,15 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   );
+});
+// gloabl click listener to clear selection
+// unless user clicks a url in the block list
+// or inputting a new url
+document.addEventListener("click", (event) => {
+  if (
+    !event.target.closest("#blocklistDisplay li") &&
+    !event.target.closest("#websiteInput")
+  ) {
+    deselectAll();
+  }
 });
