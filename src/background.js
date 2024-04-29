@@ -118,6 +118,7 @@ function addDynamicRule(url) {
       resourceTypes: ["main_frame"],
     },
   };
+  console.log("Adding rule:", { pattern, baseDomain, url }); // Log the details
 
   // Clear any existing rules with the same ID before adding a new one
   chrome.declarativeNetRequest.updateDynamicRules(
