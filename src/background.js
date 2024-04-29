@@ -100,10 +100,10 @@ function fetchLocalBlocklist(callback) {
 function addDynamicRule(url) {
   const urlObj = new URL(url);
   let baseDomain = urlObj.hostname;
-  const subDomain = baseDomain.split(".")[0];
+  const subDomain = baseDomain.split(".")[0]; // doesn't include the "."
 
-  // If the domain starts with 'www.', strip it for broader matching
-  if (subDomain === "www.") {
+  // If the subdomain is 'www', strip it for broader matching
+  if (subDomain === "www") {
     baseDomain = baseDomain.substring(4);
   }
   // Generate the unique rule ID based on the domain
@@ -140,12 +140,12 @@ function addDynamicRule(url) {
   });
 
   // allow music
-  if (subDomain.includes("music.")) {
-    chrome.declarativeNetRequest.updateDynamicRules({
-      removeRuleIds: [ruleId + 1],
-      addRules: [allowMusic],
-    });
-  }
+  // if (subDomain.includes("music.")) {
+  //   chrome.declarativeNetRequest.updateDynamicRules({
+  //     removeRuleIds: [ruleId + 1],
+  //     addRules: [allowMusic],
+  //   });
+  // }
 }
 
 // Function to remove a dynamic rule
@@ -154,7 +154,6 @@ function removeDynamicRule(url) {
   let baseDomain = urlObj.hostname;
   const subDomain = baseDomain.split(".")[0];
 
-  // If the domain starts with 'www.', strip it for broader matching
   if (subDomain === "www") {
     baseDomain = baseDomain.substring(4);
   }
