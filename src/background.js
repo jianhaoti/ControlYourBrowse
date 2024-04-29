@@ -106,7 +106,7 @@ function addDynamicRule(url) {
     baseDomain = baseDomain.substring(4);
   }
 
-  const pattern = `*://*.${baseDomain}/*`; // Matches all subdomains
+  const pattern = `*://*${baseDomain}/*`; // Matches all subdomains
   const ruleId = generateUniqueId(baseDomain);
 
   const rule = {
