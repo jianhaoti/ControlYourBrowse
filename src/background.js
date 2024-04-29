@@ -100,59 +100,66 @@ function fetchLocalBlocklist(callback) {
 function addDynamicRule(url) {
   const urlObj = new URL(url);
   let baseDomain = urlObj.hostname;
+  const subDomain = baseDomain.split(".")[0];
 
   // If the domain starts with 'www.', strip it for broader matching
-  if (baseDomain.startsWith("www.")) {
+  if (subDomain === "www.") {
     baseDomain = baseDomain.substring(4);
   }
-
-  const pattern = `*://*${baseDomain}/*`; // Matches all subdomains
+  // Generate the unique rule ID based on the domain
   const ruleId = generateUniqueId(baseDomain);
-
   const rule = {
-    id: ruleId, // Ensuring the ID is a manageable integer size
+    id: ruleId,
     priority: 1,
     action: {
       type: "redirect",
       redirect: { url: "http://localhost:8000/softblock.html" },
     },
     condition: {
-      urlFilter: pattern,
+      urlFilter: `*://*${baseDomain}/*`,
       resourceTypes: ["main_frame"],
     },
   };
-  console.log("Adding rule:", { pattern, baseDomain, url }); // Log the details
 
-  // Clear any existing rules with the same ID before adding a new one
-  chrome.declarativeNetRequest.updateDynamicRules(
-    {
-      removeRuleIds: [rule.id],
+  const allowMusic = {
+    id: ruleId + 1,
+    priority: 2,
+    action: {
+      type: "allow",
     },
-    () => {
-      chrome.declarativeNetRequest.updateDynamicRules(
-        {
-          addRules: [rule],
-        },
-        () => {
-          console.log("Rule added/updated for URL:", url);
-        }
-      );
-    }
-  );
+    condition: {
+      urlFilter: `*://music.${baseDomain}/*`,
+      resourceTypes: ["main_frame"],
+    },
+  };
+
+  // Update rules dynamically
+  chrome.declarativeNetRequest.updateDynamicRules({
+    removeRuleIds: [ruleId],
+    addRules: [rule],
+  });
+
+  // allow music
+  if (subDomain.includes("music.")) {
+    chrome.declarativeNetRequest.updateDynamicRules({
+      removeRuleIds: [ruleId + 1],
+      addRules: [allowMusic],
+    });
+  }
 }
 
 // Function to remove a dynamic rule
 function removeDynamicRule(url) {
   const urlObj = new URL(url);
   let baseDomain = urlObj.hostname;
+  const subDomain = baseDomain.split(".")[0];
 
   // If the domain starts with 'www.', strip it for broader matching
-  if (baseDomain.startsWith("www.")) {
+  if (subDomain === "www") {
     baseDomain = baseDomain.substring(4);
   }
 
   const ruleId = generateUniqueId(baseDomain);
-
   chrome.declarativeNetRequest.updateDynamicRules(
     {
       removeRuleIds: [ruleId],
