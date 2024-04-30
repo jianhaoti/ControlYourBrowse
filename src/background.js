@@ -4,8 +4,6 @@ chrome.action.onClicked.addListener((tab) => {
 
 let localBlocklist = [];
 let domainNames = [];
-// chrome.runtime.onInstalled.addListener(clearBlocklist);
-// chrome.runtime.onStartup.addListener(clearBlocklist);
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "updateBlocklist") {
@@ -26,6 +24,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true; // Indicates an asynchronous response
   }
 });
+
+chrome.webRequest.onBeforeRedirect.addListener(
+  function (details) {
+    const urlObj = new URL(details.url);
+    const baseDomain = getBaseDomain(urlObj);
+
+    chrome.storage.local.get({ domainNames: [] }, function (data) {
+      const domainNames = new Set(data.domainNames);
+
+      if (domainNames.has(baseDomain)) {
+        // Save the URL to local storage
+        chrome.storage.local.set(
+          { interceptedURL: urlObj.toString() },
+          function () {
+            console.log("URL before redirect saved:", urlObj);
+          }
+        );
+      }
+    });
+  },
+  { urls: ["<all_urls>"] },
+  ["responseHeaders"]
+);
 
 function clearBlocklist() {
   chrome.storage.local.clear(() => {
@@ -136,6 +157,7 @@ function addDynamicRule(url) {
     addRules: [rule],
   });
 
+  // Rule to allow e.g. Youtube Music
   const allowMusic = {
     id: ruleId + 1,
     priority: 2,
@@ -204,43 +226,3 @@ function getBaseDomain(urlObj) {
 
   return baseDomain;
 }
-
-// // Get blocklist from server upon startup
-// chrome.runtime.onStartup.addListener(() => {
-//   fetchBlocklistFromServer();
-// });
-
-// // Get blocklist from server upon install/update
-// chrome.runtime.onInstalled.addListener(function () {
-//   fetchBlocklistFromServer(); // Fetch blocklist also on install/update
-// });
-
-// async function fetchBlocklistFromServer() {
-//   try {
-//     const response = await fetch("https://yourserver.com/blocklist");
-//     if (response.ok) {
-//       localBlocklist = await response.json();
-//       // Further actions like registering content scripts can be done here
-//     } else {
-//       throw new Error(`Failed to fetch blocklist: ${response.status}`);
-//     }
-//   } catch (error) {
-//     console.error("Error fetching blocklist:", error);
-//   }
-// }
-
-// async function updateBlocklistOnServer(blocklist) {
-//   try {
-//     const response = await fetch("https://yourserver.com/update-blocklist", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ blocklist }),
-//     });
-//     return await response.json();
-//   } catch (error) {
-//     console.error("Failed to update blocklist on server:", error);
-//     throw error; // Rethrow error to be caught by the caller
-//   }
-// }
