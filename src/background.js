@@ -136,24 +136,21 @@ function addDynamicRule(url) {
     addRules: [rule],
   });
 
-  // Define and apply the allow rule for 'music.' subdomain if applicable
-  // if (baseDomain.includes("music")) {
-  //   const allowMusic = {
-  //     id: ruleId + 1,
-  //     priority: 2,
-  //     action: {
-  //       type: "allow",
-  //     },
-  //     condition: {
-  //       urlFilter: `*://music.${baseDomain}/*`,
-  //       resourceTypes: ["main_frame"],
-  //     },
-  //   };
+  const allowMusic = {
+    id: ruleId + 1,
+    priority: 2,
+    action: {
+      type: "allow",
+    },
+    condition: {
+      urlFilter: `*://music.${baseDomain}/*`,
+      resourceTypes: ["main_frame"],
+    },
+  };
 
-  //   chrome.declarativeNetRequest.updateDynamicRules({
-  //     addRules: [allowMusic],
-  //   });
-  // }
+  chrome.declarativeNetRequest.updateDynamicRules({
+    addRules: [allowMusic],
+  });
 }
 
 // Function to remove a dynamic rule
