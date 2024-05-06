@@ -3,9 +3,12 @@
   "name": "Focus Yourself",
   "version": "1.0",
   "permissions": [
+    "webRequest",
     "declarativeNetRequest",
     "declarativeNetRequestWithHostAccess",
-    "storage"
+    "storage",
+    "activeTab",
+    "tabs"
   ],
   "host_permissions": ["<all_urls>"],
   "declarative_net_request": {
@@ -13,8 +16,8 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.youtube.com/*"],
-      "js": ["content.js"],
+      "matches": ["<all_urls>"],
+      "js": ["softblock.js"],
       "run_at": "document_start"
     }
   ],
@@ -22,5 +25,11 @@
   "background": {
     "service_worker": "background.js"
   },
-  "action": {}
+  "action": {},
+  "web_accessible_resources": [
+    {
+      "resources": ["softblock.html", "styles.css", "calendar.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }

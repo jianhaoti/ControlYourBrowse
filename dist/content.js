@@ -1,1 +1,0 @@
-(()=>{var e=window.location.href,o=(new Date).toISOString();chrome.storage.session.set({lastVisit:{url:e,time:o}},(function(){console.log("URL and timestamp have been stored in session storage.")}))})();
