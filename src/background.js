@@ -3,10 +3,15 @@ chrome.action.onClicked.addListener((tab) => {
 });
 
 let localBlocklist = [];
+//blocklist stored locally
 let domainNames = [];
+//domain names: don't add same domain twice....
+//check for uniquenes of domain names
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "updateBlocklist") {
+    //this receives messagesd from options.js
+    //type matches thing in options.js
     switch (message.action) {
       case "add":
         addUrlToLocalBlocklist(message.url, sendResponse);
