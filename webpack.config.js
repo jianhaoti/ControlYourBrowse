@@ -1,5 +1,7 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+
 const path = require("path");
 
 module.exports = {
@@ -25,10 +27,14 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/options.html",
       filename: "options.html",
-      chunks: ["options"], // Include only 'options' chunk if you have specific JS for options page
+      chunks: ["options"],
     }),
+
     new CopyPlugin({
       patterns: [{ from: "src/manifest.json", to: "manifest.json" }],
+    }),
+    new MiniCssExtractPlugin({
+      filename: "[name].css",
     }),
   ],
   module: {
@@ -45,7 +51,7 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ["style-loader", "css-loader"],
+        use: [MiniCssExtractPlugin.loader, "css-loader"],
       },
     ],
   },

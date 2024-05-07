@@ -1,10 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>My Calendar App</title>
+    <link rel="stylesheet" href="calendar.css" />
+    <!-- Ensure your CSS file is correctly linked -->
+    <!-- Include FullCalendar CSS (Make sure to replace with the correct path or CDN) -->
   </head>
   <body>
-    <div id="calendar"></div>
+    <div class="container">
+      <div id="mydraggable">
+        <h4>Draggable Events</h4>
+        <div class="fc-event">
+          <div class="fc-event-main">Calc 2</div>
+        </div>
+        <div class="fc-event">
+          <div class="fc-event-main">Econ 101</div>
+        </div>
+        <div class="fc-event">
+          <div class="fc-event-main">Karate</div>
+        </div>
+      </div>
+      <div id="mycalendar"></div>
+    </div>
+
     <script src="calendar.js"></script>
   </body>
 </html>
