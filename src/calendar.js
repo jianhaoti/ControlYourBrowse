@@ -1,6 +1,5 @@
 import { Calendar } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
 import "./calendar.css";
 
@@ -13,14 +12,15 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize the calendar
   // -----------------------------------------------------------------
   var calendar = new Calendar(calendarElement, {
-    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    plugins: [timeGridPlugin, interactionPlugin],
     headerToolbar: {
-      left: "prev,next today",
       center: "title",
-      right: "dayGridMonth,timeGridWeek,timeGridDay",
+      left: "",
+      right: "",
     },
     editable: true,
     droppable: true,
+    dayHeaderFormat: { weekday: "long" }, // no dates
     initialView: "timeGridWeek",
     drop: function (info) {
       if (!isCreatingEvent) {

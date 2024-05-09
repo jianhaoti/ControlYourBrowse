@@ -31,3 +31,24 @@ body {
   max-width: 1100px;
   margin: 20px auto;
 }
+
+#add-event {
+  padding: 10px 20px;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.fc-toolbar-title {
+  content: "Weeklies";
+  visibility: hidden;
+  position: relative;
+}
+
+.fc-toolbar-title::after {
+  content: "Weeklies";
+  visibility: visible;
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
