@@ -9,18 +9,18 @@ module.exports = {
     background: "./src/background.js",
     softblock: "./src/softblock.js",
     options: "./src/options.js",
-    calendar: "./src/calendar.js",
+    schedule: "./src/schedule.js",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "[name].js", // This should create 'softblock.js' correctly
   },
   plugins: [
-    // calendar
+    // schedule
     new HtmlWebpackPlugin({
-      template: "./src/calendar.html",
-      filename: "calendar.html",
-      chunks: ["calendar"],
+      template: "./src/schedule.html",
+      filename: "schedule.html",
+      chunks: ["schedule"],
     }),
 
     // options

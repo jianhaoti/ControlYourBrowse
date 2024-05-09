@@ -1,7 +1,7 @@
 import { Calendar } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
-import "./calendar.css";
+import "./schedule.css";
 
 document.addEventListener("DOMContentLoaded", function () {
   var draggableElement = document.getElementById("mydraggable");

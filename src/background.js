@@ -1,7 +1,7 @@
 chrome.action.onClicked.addListener((tab) => {
-  chrome.tabs.create({ url: "calendar.html" });
+  chrome.tabs.create({ url: "schedule.html" });
 });
-//this is if we click on the tab, navigates us to calendar 
+//this is if we click on the tab, navigates us to calendar
 
 let localBlocklist = [];
 //blocklist stored locally
@@ -35,7 +35,7 @@ chrome.webRequest.onBeforeRedirect.addListener(
   //onBeforeRedirect
   //flow of info:
   //first navigate to site you softblock, then navigate away....before you navigate away, onBeforeRedirecgt....
-  //this allows us to pack in logic before the navigation away 
+  //this allows us to pack in logic before the navigation away
 
   function (details) {
     const urlObj = new URL(details.url);
@@ -43,7 +43,7 @@ chrome.webRequest.onBeforeRedirect.addListener(
 
     chrome.storage.local.get({ domainNames: [] }, function (data) {
       const domainNames = new Set(data.domainNames);
-      //turn it into set to check for uniqueness 
+      //turn it into set to check for uniqueness
 
       if (domainNames.has(baseDomain)) {
         // Save the URL to local storage
@@ -160,8 +160,8 @@ function addDynamicRule(url) {
     priority: 1,
     action: {
       type: "redirect",
-      //this is the type of rule to redirect 
-      //rules is like a library 
+      //this is the type of rule to redirect
+      //rules is like a library
       //declarativenetrequest controls all of this
       //these rules always change
       //need declarative net reequest for dynamic things...
@@ -170,7 +170,7 @@ function addDynamicRule(url) {
     condition: {
       urlFilter: `*://*${baseDomain}/*`,
       //once we extract basedomain, stars in filter is anything....
-      //wildcard characters to pattern match 
+      //wildcard characters to pattern match
       resourceTypes: ["main_frame"],
       //*TODO google
     },
@@ -186,7 +186,7 @@ function addDynamicRule(url) {
     id: ruleId + 1,
     priority: 2,
     //priority that rules are read in...first read priority 1, then priority 2
-    //this is allow action type...i allow things that match the patterned wildccards 
+    //this is allow action type...i allow things that match the patterned wildccards
     action: {
       type: "allow",
     },
