@@ -5,6 +5,28 @@ body {
   font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
   font-size: 12px;
 }
+.draggable-header {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the content horizontally */
+  padding: 10px;
+  background-color: #c9ada7;
+}
+
+.draggable-header h3 {
+  margin: 0 10px 0 0; /* Add some margin to the right of the heading */
+}
+.add-event-btn {
+  background-color: transparent; /* Make background transparent */
+  border: none; /* Remove border */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0; /* Remove padding to ensure the SVG is centered */
+}
 
 #mydraggable {
   position: fixed;
@@ -12,14 +34,10 @@ body {
   top: 20px;
   left: 20px;
   width: 150px;
-  padding: 0 10px;
+  padding-bottom: 10px;
+  padding-left: 5px;
   border: 1px solid #ccc;
-  background: #eee;
-}
-
-#mydraggable .fc-event {
-  cursor: move;
-  margin: 3px 0;
+  background: #c9ada7;
 }
 
 #mycalendar-container {

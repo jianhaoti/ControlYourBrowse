@@ -1,7 +1,6 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-
 const path = require("path");
 
 module.exports = {
@@ -13,25 +12,24 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].js", // This should create 'softblock.js' correctly
+    filename: "[name].js",
   },
   plugins: [
-    // schedule
     new HtmlWebpackPlugin({
       template: "./src/schedule.html",
       filename: "schedule.html",
       chunks: ["schedule"],
     }),
-
-    // options
     new HtmlWebpackPlugin({
       template: "./src/options.html",
       filename: "options.html",
       chunks: ["options"],
     }),
-
     new CopyPlugin({
-      patterns: [{ from: "src/manifest.json", to: "manifest.json" }],
+      patterns: [
+        { from: "src/manifest.json", to: "manifest.json" },
+        { from: "src/assets", to: "assets" }, // Copy assets folder
+      ],
     }),
     new MiniCssExtractPlugin({
       filename: "[name].css",
@@ -52,6 +50,10 @@ module.exports = {
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: "asset/resource",
       },
     ],
   },

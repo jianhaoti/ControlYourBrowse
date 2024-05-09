@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", function () {
       left: "",
       right: "",
     },
+    slotMinTime: "05:00:00", // Start time at 5 AM
+    slotMaxTime: "23:00:00", // End time at 10 PM
+
     editable: true,
     droppable: true,
     dayHeaderFormat: { weekday: "long" }, // no dates
