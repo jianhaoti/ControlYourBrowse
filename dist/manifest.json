@@ -28,7 +28,13 @@
   "action": {},
   "web_accessible_resources": [
     {
-      "resources": ["softblock.html", "styles.css", "schedule.html"],
+      "resources": [
+        "softblock.html",
+        "styles.css",
+        "schedule.html",
+        "App.html",
+        "App.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ]

@@ -9,6 +9,7 @@ module.exports = {
     softblock: "./src/softblock.js",
     options: "./src/options.js",
     schedule: "./src/schedule.js",
+    app: "./src/App.js",
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -20,6 +21,12 @@ module.exports = {
       filename: "schedule.html",
       chunks: ["schedule"],
     }),
+    new HtmlWebpackPlugin({
+      template: "./src/app.html",
+      filename: "App.html",
+      chunks: ["App"],
+    }),
+
     new HtmlWebpackPlugin({
       template: "./src/options.html",
       filename: "options.html",
@@ -59,5 +66,17 @@ module.exports = {
   },
   resolve: {
     extensions: [".js", ".jsx"],
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, "dist"), // Serve content from 'dist' directory
+    },
+    historyApiFallback: {
+      index: "app.html",
+    }, // This ensures all routes fallback to index.html (can be set to serve app.html specifically)
+    open: true, // Automatically opens the browser
+    compress: true, // Enable gzip compression
+    hot: true, // Enable Webpack's Hot Module Replacement feature
+    port: 8080, // Set the port to run the dev server
   },
 };
