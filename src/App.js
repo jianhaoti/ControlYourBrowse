@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Softblock from './softblock'; // Ensure this imports correctly
+import Softblock from './softblock.js'; // Ensure this imports correctly
 
 function App() {
   return (
