@@ -31,19 +31,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// background.js sugestion flagged
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "fetchInterceptedURL") {
-    chrome.storage.local.get("interceptedURL", (data) => {
-      if (data.interceptedURL) {
-        sendResponse({interceptedURL: data.interceptedURL});
-      } else {
-        sendResponse({interceptedURL: null, error: "No URL stored"});
-      }
-    });
-    return true; // Indicates that the response is asynchronous
-  }
-});
 
 
 chrome.webRequest.onBeforeRedirect.addListener(
