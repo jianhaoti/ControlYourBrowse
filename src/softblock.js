@@ -14,7 +14,6 @@ function Softblock() {
       //   if (data.interceptedURL) {
       //     console.log("Received intercepted URL from storage:", data.interceptedURL);
       //     setInterceptedUrl(data.interceptedURL); // Set state
-
       //     // Optionally clear the URL from storage after retrieving it
       //     chrome.storage.local.remove("interceptedURL", () => {
       //       console.log("Intercepted URL cleared from storage.");
