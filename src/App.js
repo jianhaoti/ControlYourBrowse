@@ -1,18 +1,17 @@
-import React from "react";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Softblock from './softblock'; // Ensure this imports correctly
 
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import Softblock from "./softblock";
 function App() {
   return (
-    <MemoryRouter>
+    <Router>
       <Routes>
-        <Route path="/softblock" component={Softblock}></Route>
-        {/* Add other routes if needed */}
+        <Route path="/softblock" element={<Softblock />} />
+        {/* Add more routes as needed */}
       </Routes>
-      {/* Displaying an h1 outside the router doesn't make much sense unless it's part of every page. Consider adjusting this. */}
-      <h1>Focus Yourself</h1>
-    </MemoryRouter>
+    </Router>
   );
 }
 
-export default App;
+ReactDOM.render(<App />, document.getElementById('root'));

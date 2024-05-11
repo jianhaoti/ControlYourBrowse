@@ -32,6 +32,11 @@ module.exports = {
       filename: "options.html",
       chunks: ["options"],
     }),
+    new HtmlWebpackPlugin({
+      template: "./src/softblock.html",
+      filename: "softblock.html",
+      chunks: ["softblock"],
+    }),
     new CopyPlugin({
       patterns: [
         { from: "src/manifest.json", to: "manifest.json" },

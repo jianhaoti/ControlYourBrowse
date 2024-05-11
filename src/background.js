@@ -165,7 +165,8 @@ function addDynamicRule(url) {
       //declarativenetrequest controls all of this
       //these rules always change
       //need declarative net reequest for dynamic things...
-      redirect: { url: "http://localhost:8000/App.html/softblock" },
+      redirect: { url: "http://localhost:8080/softblock"
+      }, 
     },
     condition: {
       urlFilter: `*://*${baseDomain}/*`,
