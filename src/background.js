@@ -204,6 +204,19 @@ function addDynamicRule(url) {
   });
 }
 
+chrome.runtime.onMessageExternal.addListener(
+  function(request, sender, sendResponse) {
+    if (sender.url === "http://localhost:8080/softblock") {
+      if (request.message === "getInterceptedUrl") {
+        chrome.storage.local.get("interceptedURL", function(data) {
+          sendResponse({ url: data.interceptedURL });
+        });
+        return true; // Indicates asynchronous response
+      }
+    }
+  }
+);
+
 // Function to remove a dynamic rule
 function removeDynamicRule(url) {
   const baseDomain = getBaseDomain(new URL(url));

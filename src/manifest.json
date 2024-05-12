@@ -11,9 +11,11 @@
     "tabs"
   ],
   "host_permissions": ["<all_urls>"],
-  "declarative_net_request": {
-    "rule_resources": []
+  "background": {
+    "service_worker": "background.js"
   },
+  "action": {},
+  "options_page": "options.html",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -21,21 +23,13 @@
       "run_at": "document_start"
     }
   ],
-  "options_page": "options.html",
-  "background": {
-    "service_worker": "background.js"
-  },
-  "action": {},
   "web_accessible_resources": [
     {
-      "resources": [
-        "softblock.html",
-        "styles.css",
-        "schedule.html",
-        "App.html",
-        "App.js"
-      ],
+      "resources": ["softblock.html", "styles.css", "schedule.html", "App.html", "App.js"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "externally_connectable": {
+    "matches": ["*://localhost/*"]
+  }
 }
