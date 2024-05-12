@@ -27,7 +27,6 @@ function Softblock() {
   }, []);
 
   useEffect(() => {
-    console.log(theme.palette.background.default);
     console.log("cssbaseline") // Check what this outputs\
     console.log(theme);
   }, [theme]);
