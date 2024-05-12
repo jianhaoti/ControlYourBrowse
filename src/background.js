@@ -217,6 +217,8 @@ chrome.runtime.onMessageExternal.addListener(
   }
 );
 
+//this is external messaging, a technique to get chrome api to connect with external webpage 
+
 // Function to remove a dynamic rule
 function removeDynamicRule(url) {
   const baseDomain = getBaseDomain(new URL(url));
