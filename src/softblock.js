@@ -26,6 +26,12 @@ function Softblock() {
     }
   }, []);
 
+  useEffect(() => {
+    console.log(theme.palette.background.default);
+    console.log("cssbaseline") // Check what this outputs
+  }, [theme]);
+  
+
   return (
     <div style={{backgroundColor: theme.palette.background.default}}>
       <Typography variant = "h4">Softblock Page</Typography>

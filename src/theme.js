@@ -20,7 +20,7 @@ const theme = createTheme({
   },
   typography: {
     fontFamily: [
-      '"Helvetica Neue"',
+      'Times New Roman',
       'Arial',
       'sans-serif'
     ].join(','),
