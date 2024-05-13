@@ -28,8 +28,9 @@ function Softblock() {
 
   useEffect(() => {
     console.log("cssbaseline") // Check what this outputs\
+    debugger;
     console.log(theme);
-  }, [theme]);
+  }, []);
   
 
   return (
