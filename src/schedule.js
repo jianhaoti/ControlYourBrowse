@@ -25,6 +25,98 @@ const Schedule = () => {
   };
 
   useEffect(() => {
+    // styling for calender title
+    const calendarTitle = document.createElement("style");
+    calendarTitle.innerHTML = `
+      /* Colors the columns */
+      :root {
+        --fc-border-color: black;
+      }   
+
+      /* Remove the highlight for today */
+      .fc-day-today {
+          background: transparent !important;        
+      } 
+            
+      /* Title bar */
+      .fc-toolbar-title {
+        content: "My Week";
+        visibility: hidden;
+        position: relative;
+      }
+
+      .fc-toolbar-title::after {
+        content: "My Week";
+        visibility: visible;
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+      
+      /* Responsive day header titles */
+      .fc-col-header-cell {
+        flex: 1 1 auto;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      /* Spacing for Days */
+      .fc-col-header-cell .fc-col-header-cell-cushion {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.5em;
+        font-size: 1em;
+      }
+
+      @media (max-width: 768px) {
+        .fc-col-header-cell .fc-col-header-cell-cushion {
+          font-size: 0.8em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .fc-col-header-cell .fc-col-header-cell-cushion {
+          font-size: 0.6em;
+        }
+      }
+      
+
+      /* Gray rows beetween times */
+      .fc .fc-timegrid-slot{
+        border-color: gray
+      }
+      
+      /* External borders exist */
+      .fc .fc-scrollgrid {
+        border-top: 1px solid --var(fc-border-color);
+        border-right: none;
+        border-bottom: 1px solid --var(fc-border-color);
+        border-left:1px solid --var(fc-border-color);
+      }
+
+      /* */
+      /* */
+      /* */
+      /* */
+
+      /* Calender background color */
+      .fc-view {
+        background-color: #f1e6e4;
+      }
+
+      /* Even rows darker */
+      .fc-timegrid-slots tr:nth-of-type(4n+1), 
+      .fc-timegrid-slots tr:nth-of-type(4n+2) {
+        background-color: #e6d4d2;
+      }
+    `;
+
+    document.head.appendChild(calendarTitle);
+
     const calendarElement = document.getElementById("mycalendar");
     const calendar = new Calendar(calendarElement, {
       plugins: [timeGridPlugin, interactionPlugin],
@@ -37,10 +129,17 @@ const Schedule = () => {
       slotMaxTime: "23:00:00",
       editable: true,
       droppable: true,
+      allDaySlot: false,
       dayHeaderFormat: { weekday: "long" },
       initialView: "timeGridWeek",
     });
     calendar.render();
+
+    // cleanup
+    return () => {
+      document.head.removeChild(style);
+      calendar.destroy(); // Also ensure you clean up the calendar instance
+    };
   }, []);
 
   return (
@@ -84,6 +183,7 @@ const Schedule = () => {
             }}
             onClick={handleAddWeekly}
           >
+            {/* plus icon */}
             <img
               src="assets/addIcon.svg"
               alt="Add Event"
