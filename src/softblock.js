@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { Typography } from "@mui/material";
+import { useTheme } from '@mui/material/styles';
 
 function Softblock() {
   const [interceptedUrl, setInterceptedUrl] = useState("");
+  const theme = useTheme();
 
   useEffect(() => {
     const extensionId = 'gnbpdhalckpbngapiidobojpbeljnjlm'; // Replace with your actual extension ID
@@ -23,13 +26,20 @@ function Softblock() {
     }
   }, []);
 
+  useEffect(() => {
+    console.log("cssbaseline") // Check what this outputs\
+    debugger;
+    console.log(theme);
+  }, []);
+  
+
   return (
-    <div>
-      <h1>Softblock Page</h1>
+    <div style={{backgroundColor: theme.palette.background.default}}>
+      <Typography variant = "h4">Softblock Page</Typography>
       {interceptedUrl ? (
-        <p>Intercepted URL: {interceptedUrl}</p>
+        <Typography>Intercepted URL: {interceptedUrl}</Typography>
       ) : (
-        <p>No URL intercepted or already cleared.</p>
+        <Typography>No URL intercepted or already cleared.</Typography>
       )}
     </div>
   );
