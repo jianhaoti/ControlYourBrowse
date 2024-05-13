@@ -40,7 +40,6 @@ const Schedule = () => {
       dayHeaderFormat: { weekday: "long" },
       initialView: "timeGridWeek",
     });
-
     calendar.render();
   }, []);
 

@@ -73,7 +73,7 @@ module.exports = {
     },
     historyApiFallback: {
       index: "app.html",
-    }, // This ensures all routes fallback to index.html (can be set to serve app.html specifically)
+    },
     open: true, // Automatically opens the browser
     compress: true, // Enable gzip compression
     hot: true, // Enable Webpack's Hot Module Replacement feature
