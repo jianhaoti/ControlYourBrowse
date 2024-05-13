@@ -1,72 +1,86 @@
-import { Calendar } from "@fullcalendar/core";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
-import "./schedule.css";
+import React, { useEffect } from 'react';
+import { Calendar } from '@fullcalendar/core';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin, { Draggable } from '@fullcalendar/interaction';
+import './schedule.css';  // Make sure the path is correct
 
-document.addEventListener("DOMContentLoaded", function () {
-  var draggableElement = document.getElementById("mydraggable");
-  var calendarElement = document.getElementById("mycalendar");
-  var addButton = document.getElementById("add-event");
-  var isCreatingEvent = false; // Flag to prevent multiple event creation
+const Schedule = () => {
+  useEffect(() => {
+    const draggableElement = document.getElementById("mydraggable");
+    const calendarElement = document.getElementById("mycalendar");
+    const addButton = document.getElementById("add-event");
 
-  // Initialize the calendar
-  // -----------------------------------------------------------------
-  var calendar = new Calendar(calendarElement, {
-    plugins: [timeGridPlugin, interactionPlugin],
-    headerToolbar: {
-      center: "title",
-      left: "",
-      right: "",
-    },
-    slotMinTime: "05:00:00", // Start time at 5 AM
-    slotMaxTime: "23:00:00", // End time at 10 PM
+    console.log("schedule is mounting")
 
-    editable: true,
-    droppable: true,
-    dayHeaderFormat: { weekday: "long" }, // no dates
-    initialView: "timeGridWeek",
-    drop: function (info) {
-      if (!isCreatingEvent) {
-        isCreatingEvent = true;
-        setTimeout(() => {
-          isCreatingEvent = false;
-        }, 100); // Reset the flag after a short delay
-      } else {
-        info.revert(); // Revert the drop if an event is already being created
-      }
-    },
-  });
+    let isCreatingEvent = false;  // Flag to prevent multiple event creation
 
-  // Initialize draggables
-  // -----------------------------------------------------------------
-  let draggable = new Draggable(draggableElement, {
-    itemSelector: ".fc-event",
-    eventData: function (eventEl) {
-      return {
-        title: eventEl.innerText,
-      };
-    },
-  });
-  if (!addButton.hasClickListner) {
-    addButton.addEventListener("click", function () {
-      var eventTitle = prompt("Enter event title:");
-      if (eventTitle) {
-        var newEvent = document.createElement("div");
-        newEvent.className = "fc-event";
-        newEvent.innerHTML = `<div class="fc-event-main">${eventTitle}</div>`;
-        draggableElement.appendChild(newEvent);
-        // Reinitialize Draggable to include the new event
-        new Draggable(draggableElement, {
-          itemSelector: ".fc-event",
-          eventData: function (eventEl) {
-            return {
-              title: eventEl.innerText,
-            };
-          },
-        });
+    const calendar = new Calendar(calendarElement, {
+      plugins: [timeGridPlugin, interactionPlugin],
+      headerToolbar: {
+        center: 'title',
+        left: '',
+        right: '',
+      },
+      slotMinTime: "05:00:00",
+      slotMaxTime: "23:00:00",
+      editable: true,
+      droppable: true,
+      dayHeaderFormat: { weekday: 'long' },
+      initialView: 'timeGridWeek',
+      drop: function(info) {
+        if (!isCreatingEvent) {
+          isCreatingEvent = true;
+          setTimeout(() => { isCreatingEvent = false; }, 100);
+        } else {
+          info.revert();
+        }
       }
     });
-    addButton.hasClickListner = true;
-  }
-  calendar.render();
-});
+
+    calendar.render();
+
+    let draggable = new Draggable(draggableElement, {
+      itemSelector: '.fc-event',
+      eventData: function(eventEl) {
+        return { title: eventEl.innerText };
+      }
+    });
+
+    if (!addButton.hasClickListner) {
+      addButton.addEventListener('click', () => {
+        let eventTitle = prompt('Enter event title:');
+        if (eventTitle) {
+          let newEvent = document.createElement('div');
+          newEvent.className = 'fc-event';
+          newEvent.innerHTML = `<div class='fc-event-main'>${eventTitle}</div>`;
+          draggableElement.appendChild(newEvent);
+          new Draggable(draggableElement, {
+            itemSelector: '.fc-event',
+            eventData: function(eventEl) {
+              return { title: eventEl.innerText };
+            }
+          });
+        }
+      });
+      addButton.hasClickListner = true;
+    }
+  }, []);
+
+  return (
+    <div>
+      <div id="mydraggable">
+        <div className="draggable-header">
+          <h3>Weeklies</h3>
+          <button id="add-event" className="add-event-btn">
+            <img src="assets/addIcon.svg" alt="Add Event" width="24" height="24" />
+          </button>
+        </div>
+      </div>
+      <div className="mycalendar-container">
+        <div id="mycalendar"></div>
+      </div>
+    </div>
+  );
+};
+
+export default Schedule;
