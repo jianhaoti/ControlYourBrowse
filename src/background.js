@@ -31,8 +31,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-
-
 chrome.webRequest.onBeforeRedirect.addListener(
   //onBeforeRedirect
   //flow of info:
@@ -167,8 +165,7 @@ function addDynamicRule(url) {
       //declarativenetrequest controls all of this
       //these rules always change
       //need declarative net reequest for dynamic things...
-      redirect: { url: "http://localhost:8080/softblock"
-      }, 
+      redirect: { url: "http://localhost:8080/softblock" },
     },
     condition: {
       urlFilter: `*://*${baseDomain}/*`,
@@ -204,20 +201,22 @@ function addDynamicRule(url) {
   });
 }
 
-chrome.runtime.onMessageExternal.addListener(
-  function(request, sender, sendResponse) {
-    if (sender.url === "http://localhost:8080/softblock") {
-      if (request.message === "getInterceptedUrl") {
-        chrome.storage.local.get("interceptedURL", function(data) {
-          sendResponse({ url: data.interceptedURL });
-        });
-        return true; // Indicates asynchronous response
-      }
+chrome.runtime.onMessageExternal.addListener(function (
+  request,
+  sender,
+  sendResponse
+) {
+  if (sender.url === "http://localhost:8080/softblock") {
+    if (request.message === "getInterceptedUrl") {
+      chrome.storage.local.get("interceptedURL", function (data) {
+        sendResponse({ url: data.interceptedURL });
+      });
+      return true; // Indicates asynchronous response
     }
   }
-);
+});
 
-//this is external messaging, a technique to get chrome api to connect with external webpage 
+//this is external messaging, a technique to get chrome api to connect with external webpage
 
 // Function to remove a dynamic rule
 function removeDynamicRule(url) {

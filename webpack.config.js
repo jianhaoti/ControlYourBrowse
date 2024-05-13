@@ -16,11 +16,11 @@ module.exports = {
     filename: "[name].js",
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: "./src/schedule.html",
-      filename: "schedule.html",
-      chunks: ["schedule"],
-    }),
+    // new HtmlWebpackPlugin({
+    //   template: "./src/schedule.html",
+    //   filename: "schedule.html",
+    //   chunks: ["schedule"],
+    // }),
     new HtmlWebpackPlugin({
       template: "./src/app.html",
       filename: "App.html",
