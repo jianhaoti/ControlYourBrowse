@@ -16,17 +16,11 @@ module.exports = {
     filename: "[name].js",
   },
   plugins: [
-    // new HtmlWebpackPlugin({
-    //   template: "./src/schedule.html",
-    //   filename: "schedule.html",
-    //   chunks: ["schedule"],
-    // }),
     new HtmlWebpackPlugin({
       template: "./src/app.html",
       filename: "App.html",
       chunks: ["App"],
     }),
-
     new HtmlWebpackPlugin({
       template: "./src/options.html",
       filename: "options.html",
@@ -61,7 +55,22 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        exclude: /\.module\.css$/, // Exclude CSS Modules
         use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+      {
+        test: /\.module\.css$/, // Handle CSS Modules
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: "css-loader",
+            options: {
+              modules: {
+                localIdentName: "[name]__[local]___[hash:base64:5]", // Customize the generated class name
+              },
+            },
+          },
+        ],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
