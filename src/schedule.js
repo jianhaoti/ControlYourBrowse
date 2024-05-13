@@ -26,9 +26,6 @@ const Schedule = () => {
 
   useEffect(() => {
     const calendarElement = document.getElementById("mycalendar");
-
-    let isCreatingEvent = false; // Flag to prevent multiple event creation
-
     const calendar = new Calendar(calendarElement, {
       plugins: [timeGridPlugin, interactionPlugin],
       headerToolbar: {
@@ -42,16 +39,6 @@ const Schedule = () => {
       droppable: true,
       dayHeaderFormat: { weekday: "long" },
       initialView: "timeGridWeek",
-      drop: function (info) {
-        if (!isCreatingEvent) {
-          isCreatingEvent = true;
-          setTimeout(() => {
-            isCreatingEvent = false;
-          }, 100);
-        } else {
-          info.revert();
-        }
-      },
     });
 
     calendar.render();
