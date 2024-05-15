@@ -108,11 +108,15 @@ const Schedule = () => {
         background-color: #f1e6e4;
       }
 
-      /* Even rows darker */
-      .fc-timegrid-slots tr:nth-of-type(4n+1), 
-      .fc-timegrid-slots tr:nth-of-type(4n+2) {
-        background-color: #e6d4d2;
+      /* Headers for days of the week */
+      .fc-col-header-cell {
+        background-color: #d1b2ae; /* Lighter shade */
       }
+
+    .fc-timegrid-axis{
+      background-color: #d1b2ae; /* Lighter shade */
+    }
+
     `;
 
     document.head.appendChild(calendarTitle);
