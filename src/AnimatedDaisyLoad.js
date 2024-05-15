@@ -12,7 +12,7 @@ const variants = {
     strokeDasharray: `${totalLength} ${totalLength}`,  // Keeps the dash array constant
     strokeDashoffset: 0,                               // Animates offset to 0 to reveal the path
     transition: {
-      duration: 3,
+      duration: 11,
       ease: "easeInOut"
     }
   }
