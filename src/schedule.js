@@ -115,6 +115,8 @@ const Schedule = () => {
 
     document.head.appendChild(calendarTitle);
 
+    let lastClickTime = 0;
+
     const calendarElement = document.getElementById("mycalendar");
     const calendar = new Calendar(calendarElement, {
       plugins: [timeGridPlugin, interactionPlugin],
@@ -135,6 +137,20 @@ const Schedule = () => {
       height: 700, //limit the content height
       windowResize: () => {
         calendar.updateSize(); // Update calendar size on window resize
+      },
+      eventResizableFromStart: true, // Allow resizing from start
+      eventDurationEditable: true, // Allow event duration editing
+      selectable: true, // Enable selection
+      selectMirror: true, // Show a placeholder for the selection
+
+      select: (info) => {
+        calendar.addEvent({
+          title: "New Event",
+          start: info.start,
+          end: info.end,
+          allDay: info.allDay,
+        });
+        calendar.unselect(); // Clear the selection
       },
     });
     calendar.render();
