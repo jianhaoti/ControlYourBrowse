@@ -7,7 +7,6 @@ module.exports = {
   entry: {
     background: "./src/background.js",
     softblock: "./src/softblock.js",
-    options: "./src/options.js",
     schedule: "./src/schedule.js",
     app: "./src/App.js",
   },
@@ -22,11 +21,6 @@ module.exports = {
       chunks: ["App"],
     }),
 
-    new HtmlWebpackPlugin({
-      template: "./src/options.html",
-      filename: "options.html",
-      chunks: ["options"],
-    }),
     new HtmlWebpackPlugin({
       template: "./src/softblock.html",
       filename: "softblock.html",

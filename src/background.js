@@ -1,5 +1,5 @@
 chrome.action.onClicked.addListener((tab) => {
-  chrome.tabs.create({ url: "http://localhost:8080/schedule" });
+  chrome.tabs.create({ url: "http://localhost:8080/blockedWebsites" });
 });
 //this is if we click on the tab, navigates us to calendar
 
