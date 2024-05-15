@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
+import AnimatedDaisyLoad from "./AnimatedDaisyLoad";
+
 
 function Softblock() {
   const [interceptedUrl, setInterceptedUrl] = useState("");
@@ -36,6 +38,7 @@ function Softblock() {
   return (
     <div style={{backgroundColor: theme.palette.background.default}}>
       <Typography variant = "h4">Softblock Page</Typography>
+      <AnimatedDaisyLoad />
       {interceptedUrl ? (
         <Typography>Intercepted URL: {interceptedUrl}</Typography>
       ) : (
