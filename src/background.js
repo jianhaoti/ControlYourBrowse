@@ -9,27 +9,29 @@ let domainNames = [];
 //domain names: don't add same domain twice....
 //check for uniquenes of domain names
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === "updateBlocklist") {
-    //this receives messagesd from options.js
-    //type matches thing in options.js
-    switch (message.action) {
-      case "add":
-        addUrlToLocalBlocklist(message.url, sendResponse);
-        break;
-      case "remove":
-        removeUrlFromLocalBlocklist(message.url, sendResponse);
-        break;
-      case "clear":
-        clearBlocklist();
-        break;
-      case "fetch":
-        fetchLocalBlocklist(sendResponse);
-        break;
-    }
-    return true; // Indicates an asynchronous response
+chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+  console.log("Received message:", message);
+  switch (message.type) {
+    case "updateBlocklist":
+      switch (message.action) {
+        case "add":
+          addUrlToLocalBlocklist(message.url, sendResponse);
+          return true; // Keep the message channel open for asynchronous response
+        case "remove":
+          removeUrlFromLocalBlocklist(message.url, sendResponse);
+          return true;
+        case "clear":
+          clearBlocklist();
+          sendResponse({ status: "success" });
+          break;
+        case "fetch":
+          fetchLocalBlocklist(sendResponse);
+          return true;
+      }
+      break;
   }
 });
+
 
 chrome.webRequest.onBeforeRedirect.addListener(
   //onBeforeRedirect

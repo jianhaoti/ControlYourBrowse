@@ -7,7 +7,7 @@ function Softblock() {
   const theme = useTheme();
 
   useEffect(() => {
-    const extensionId = 'gnbpdhalckpbngapiidobojpbeljnjlm'; // Replace with your actual extension ID
+    const extensionId = "gnbpdhalckpbngapiidobojpbeljnjlm"; // Replace with your actual extension ID
     // Check if the Chrome APIs are available
     if (chrome && chrome.runtime && chrome.runtime.sendMessage) {
       chrome.runtime.sendMessage(extensionId, { message: "getInterceptedUrl" }, response => {

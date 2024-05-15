@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const extensionId = "gmpdhjhofpdgofmlocjhdcbbobjddpmm";
+const extensionId = "gnbpdhalckpbngapiidobojpbeljnjlm";
 
 function BlockedWebsites() {
   const [blocklist, setBlocklist] = useState([]);
@@ -22,6 +22,7 @@ function BlockedWebsites() {
       }
     );
   }, []);
+  
 
   const isValidUrl = (urlString) => {
     try {
