@@ -27,13 +27,26 @@ const Schedule = () => {
   };
 
   useEffect(() => {
-    // styling for calender title
     const calendarTitle = document.createElement("style");
     calendarTitle.innerHTML = `
       /* Colors the columns */
       :root {
         --fc-border-color: black;
       }   
+
+      /* Gray rows beetween times */
+      .fc .fc-timegrid-slot{
+        border-color: gray
+      }
+
+      /* External borders black */
+      .fc .fc-scrollgrid {
+        border-top: 1px solid --var(fc-border-color);
+        border-right: none;
+        border-bottom: 1px solid --var(fc-border-color);
+        border-left:1px solid --var(fc-border-color);
+      }
+
 
       /* Remove the highlight for today */
       .fc-day-today {
@@ -74,6 +87,7 @@ const Schedule = () => {
         font-size: 1em;
       }
 
+      /* font sizes depending on window size */
       @media (max-width: 768px) {
         .fc-col-header-cell .fc-col-header-cell-cushion {
           font-size: 0.8em;
@@ -85,25 +99,6 @@ const Schedule = () => {
           font-size: 0.6em;
         }
       }
-      
-
-      /* Gray rows beetween times */
-      .fc .fc-timegrid-slot{
-        border-color: gray
-      }
-      
-      /* External borders exist */
-      .fc .fc-scrollgrid {
-        border-top: 1px solid --var(fc-border-color);
-        border-right: none;
-        border-bottom: 1px solid --var(fc-border-color);
-        border-left:1px solid --var(fc-border-color);
-      }
-
-      /* */
-      /* */
-      /* */
-      /* */
 
       /* Calender background color */
       .fc-view {
@@ -111,13 +106,10 @@ const Schedule = () => {
       }
 
       /* Headers for days of the week */
-      .fc-col-header-cell {
+      .fc-col-header-cell, 
+      .fc-timegrid-axis{
         background-color: #d1b2ae; /* Lighter shade */
       }
-
-    .fc-timegrid-axis{
-      background-color: #d1b2ae; /* Lighter shade */
-    }
 
     `;
 
@@ -133,11 +125,17 @@ const Schedule = () => {
       },
       slotMinTime: "05:00:00",
       slotMaxTime: "23:00:00",
+      slotDuration: "00:15:00", // 15-minute increments
+      slotLabelInterval: "01:00:00", // Label every 30 minutes
       editable: true,
       droppable: true,
       allDaySlot: false,
       dayHeaderFormat: { weekday: "long" },
       initialView: "timeGridWeek",
+      height: 700, //limit the content height
+      windowResize: () => {
+        calendar.updateSize(); // Update calendar size on window resize
+      },
     });
     calendar.render();
 
