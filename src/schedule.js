@@ -15,12 +15,14 @@ const Schedule = () => {
       draggableElement.appendChild(newEvent);
 
       // drag-and-drop feature
-      new Draggable(draggableElement, {
-        itemSelector: ".fc-event",
-        eventData: function (eventEl) {
-          return { title: eventEl.innerText };
-        },
-      });
+      if (!draggableElement.draggableInstance) {
+        draggableElement.draggableInstance = new Draggable(draggableElement, {
+          itemSelector: ".fc-event",
+          eventData: function (eventEl) {
+            return { title: eventEl.innerText };
+          },
+        });
+      }
     }
   };
 
