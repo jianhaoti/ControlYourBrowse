@@ -18,6 +18,8 @@ const variants = {
   }
 };
 
+// *TODO: make the outer flower radiate starting at 12pm, also have the flower move after it fills and shrinks towards the middle 
+
 const AnimatedDaisyLoad = () => {
   return (
     <motion.svg
