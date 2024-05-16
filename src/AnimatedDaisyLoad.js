@@ -1,37 +1,65 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect } from 'react';
+import { motion, useAnimation } from 'framer-motion';
 
 const totalLength = 2400;
 
 const variants = {
   hidden: {
     strokeDasharray: `${totalLength} ${totalLength}`,  // Total path length is hidden initially
-    strokeDashoffset: totalLength                    // Offset is also the total path length
+    strokeDashoffset: totalLength,                 // Offset is also the total path length
   },
   visible: {
     strokeDasharray: `${totalLength} ${totalLength}`,  // Keeps the dash array constant
-    strokeDashoffset: 0,                               // Animates offset to 0 to reveal the path
+    strokeDashoffset: 0,                          // Animates offset to 0 to reveal the path
     transition: {
-      duration: 11,
+      duration: 8,
+      ease: "easeInOut"
+    }
+  },
+  zoomOut: {
+    scale: 0.5,
+    originX: "40%",
+    originY: "50%",
+    transition: {
+      duration: 2,
+      ease: "easeInOut"
+    }
+  },
+  fadeOut: {
+    opacity: 0,
+    transition: {
+      duration: 2,
       ease: "easeInOut"
     }
   }
 };
 
-// *TODO: make the outer flower radiate starting at 12pm, also have the flower move after it fills and shrinks towards the middle 
-
 const AnimatedDaisyLoad = () => {
+  const controls = useAnimation();
+
+  useEffect(() => {
+    const sequence = async () => {
+      await controls.start("visible");
+      await controls.start("zoomOut");
+      await controls.start("fadeOut");
+    };
+
+    sequence();
+  }, [controls]);
+
   return (
-    <motion.svg
+    <motion.div
       initial="hidden"
-      animate="visible"
+      animate={controls}
       variants={variants}
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      width="300px"
-      height="300px"
-      viewBox="0 0 600 600"
     >
+      <motion.svg
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        width="500px"
+        height="500px"
+        viewBox="0 0 512 512"
+      >
         <path
           d="M509.176,249.196c-20.497-20.508-46.3-34.693-74.232-41.144c20.978-19.545,36.223-44.749,43.722-72.746
           c0.663-2.471,0.321-5.092-0.963-7.307c-1.273-2.214-3.38-3.83-5.841-4.482c-28.007-7.499-57.437-6.9-84.856,1.487
@@ -106,6 +134,7 @@ const AnimatedDaisyLoad = () => {
           fill="none"
         />
     </motion.svg>
+    </motion.div>
   );
 };
 
