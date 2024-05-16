@@ -8,6 +8,9 @@ const Schedule = () => {
   const [eventTitle, setEventTitle] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const defaultColor = "#7B3D3D";
+  const [eventColor, setEventColor] = useState(defaultColor);
+
   const formatTimeForInput = (date) => {
     return date.toLocaleTimeString("en-GB", {
       hour: "2-digit",
@@ -149,11 +152,15 @@ const Schedule = () => {
           start: info.start,
           end: info.end,
           allDay: info.allDay,
+          eventBackgroundColor: defaultColor,
+          backgroundColor: defaultColor,
+          borderColor: defaultColor,
         });
         setSelectedEvent(newEvent);
         setEventTitle(newEvent.title);
         setStartTime(formatTimeForInput(newEvent.start));
         setEndTime(formatTimeForInput(newEvent.end));
+        setEventColor(defaultColor);
 
         calendar.unselect(); // Clear the selection
       },
@@ -163,6 +170,7 @@ const Schedule = () => {
         setEventTitle(info.event.title);
         setStartTime(formatTimeForInput(info.event.start));
         setEndTime(formatTimeForInput(info.event.end));
+        setEventColor(info.event.backgroundColor);
       },
     });
     calendar.render();
@@ -186,6 +194,14 @@ const Schedule = () => {
       calendarElement.removeEventListener("click", handleCalendarClick);
     };
   }, []);
+
+  const handleColorChange = (color) => {
+    setEventColor(color);
+    if (selectedEvent) {
+      selectedEvent.setProp("backgroundColor", color);
+      selectedEvent.setProp("borderColor", color);
+    }
+  };
 
   const handleTitleChange = (e) => {
     setEventTitle(e.target.value);
@@ -228,11 +244,13 @@ const Schedule = () => {
         <h3>Event</h3>
         {selectedEvent ? (
           <div>
+            {/* Title */}
             <input
               type="text"
               value={eventTitle}
               onChange={handleTitleChange}
             />
+            {/* Time */}
             <div
               style={{
                 marginTop: "10px",
@@ -246,6 +264,16 @@ const Schedule = () => {
               <div style={{ marginLeft: "10px", color: "gray" }}>
                 {calculateDuration(startTime, endTime)}
               </div>
+            </div>
+            {/* Color */}
+            <div style={{ marginTop: "10px" }}>
+              <label>Tag: </label>
+              <input
+                type="color"
+                value={eventColor}
+                onChange={(e) => handleColorChange(e.target.value)}
+                style={{ marginLeft: "10px" }}
+              />
             </div>
           </div>
         ) : (
