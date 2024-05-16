@@ -1,29 +1,18 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin, { Draggable } from "@fullcalendar/interaction";
+import interactionPlugin from "@fullcalendar/interaction";
 
 const Schedule = () => {
-  const handleAddWeekly = () => {
-    const draggableElement = document.getElementById("mydraggable");
-
-    let eventTitle = prompt("Enter event title:");
-    if (eventTitle) {
-      let newEvent = document.createElement("div");
-      newEvent.className = "fc-event";
-      newEvent.innerHTML = `<div class='fc-event-main'>${eventTitle}</div>`;
-      draggableElement.appendChild(newEvent);
-
-      // drag-and-drop feature
-      if (!draggableElement.draggableInstance) {
-        draggableElement.draggableInstance = new Draggable(draggableElement, {
-          itemSelector: ".fc-event",
-          eventData: function (eventEl) {
-            return { title: eventEl.innerText };
-          },
-        });
-      }
-    }
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [eventTitle, setEventTitle] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
+  const formatTimeForInput = (date) => {
+    return date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   useEffect(() => {
@@ -32,27 +21,26 @@ const Schedule = () => {
       /* Colors the columns */
       :root {
         --fc-border-color: black;
-      }   
+      }
 
-      /* Gray rows beetween times */
-      .fc .fc-timegrid-slot{
-        border-color: gray
+      /* Gray rows between times */
+      .fc .fc-timegrid-slot {
+        border-color: gray;
       }
 
       /* External borders black */
       .fc .fc-scrollgrid {
-        border-top: 1px solid --var(fc-border-color);
+        border-top: 1px solid var(--fc-border-color);
         border-right: none;
-        border-bottom: 1px solid --var(fc-border-color);
-        border-left:1px solid --var(fc-border-color);
+        border-bottom: 1px solid var(--fc-border-color);
+        border-left: 1px solid var(--fc-border-color);
       }
-
 
       /* Remove the highlight for today */
       .fc-day-today {
-          background: transparent !important;        
-      } 
-            
+        background: transparent !important;
+      }
+
       /* Title bar */
       .fc-toolbar-title {
         content: "My Week";
@@ -66,9 +54,10 @@ const Schedule = () => {
         position: absolute;
         left: 0;
         right: 0;
+        top: 1.5vh;
         text-align: center;
       }
-      
+
       /* Responsive day header titles */
       .fc-col-header-cell {
         flex: 1 1 auto;
@@ -87,7 +76,7 @@ const Schedule = () => {
         font-size: 1em;
       }
 
-      /* font sizes depending on window size */
+      /* Font sizes depending on window size */
       @media (max-width: 768px) {
         .fc-col-header-cell .fc-col-header-cell-cushion {
           font-size: 0.8em;
@@ -100,22 +89,19 @@ const Schedule = () => {
         }
       }
 
-      /* Calender background color */
+      /* Calendar background color */
       .fc-view {
         background-color: #f1e6e4;
       }
 
       /* Headers for days of the week */
-      .fc-col-header-cell, 
-      .fc-timegrid-axis{
+      .fc-col-header-cell,
+      .fc-timegrid-axis {
         background-color: #d1b2ae; /* Lighter shade */
       }
-
     `;
 
     document.head.appendChild(calendarTitle);
-
-    let lastClickTime = 0;
 
     const calendarElement = document.getElementById("mycalendar");
     const calendar = new Calendar(calendarElement, {
@@ -125,16 +111,16 @@ const Schedule = () => {
         left: "",
         right: "",
       },
-      slotMinTime: "05:00:00",
-      slotMaxTime: "23:00:00",
+      slotMinTime: "00:00:00",
+      slotMaxTime: "24:00:00",
       slotDuration: "00:15:00", // 15-minute increments
-      slotLabelInterval: "01:00:00", // Label every 30 minutes
+      slotLabelInterval: "01:00:00", // Label every 1 hr
       editable: true,
       droppable: true,
       allDaySlot: false,
       dayHeaderFormat: { weekday: "long" },
       initialView: "timeGridWeek",
-      height: 700, //limit the content height
+      height: 100, // limit the content height
       windowResize: () => {
         calendar.updateSize(); // Update calendar size on window resize
       },
@@ -143,91 +129,141 @@ const Schedule = () => {
       selectable: true, // Enable selection
       selectMirror: true, // Show a placeholder for the selection
 
+      // Event listeners to update time automatically
+      eventDrop: (info) => {
+        setSelectedEvent(info.event);
+        setEventTitle(info.event.title);
+        setStartTime(formatTimeForInput(info.event.start));
+        setEndTime(formatTimeForInput(info.event.end));
+      },
+      eventResize: (info) => {
+        setSelectedEvent(info.event);
+        setEventTitle(info.event.title);
+        setStartTime(formatTimeForInput(info.event.start));
+        setEndTime(formatTimeForInput(info.event.end));
+      },
+
       select: (info) => {
-        calendar.addEvent({
+        const newEvent = calendar.addEvent({
           title: "New Event",
           start: info.start,
           end: info.end,
           allDay: info.allDay,
         });
+        setSelectedEvent(newEvent);
+        setEventTitle(newEvent.title);
+        setStartTime(formatTimeForInput(newEvent.start));
+        setEndTime(formatTimeForInput(newEvent.end));
+
         calendar.unselect(); // Clear the selection
+      },
+
+      eventClick: (info) => {
+        setSelectedEvent(info.event);
+        setEventTitle(info.event.title);
+        setStartTime(formatTimeForInput(info.event.start));
+        setEndTime(formatTimeForInput(info.event.end));
       },
     });
     calendar.render();
 
-    // cleanup
+    // Handle clicks outside of events
+    const handleCalendarClick = (event) => {
+      if (!event.target.closest(".fc-event")) {
+        setSelectedEvent(null);
+        setEventTitle("");
+        setStartTime("");
+        setEndTime("");
+      }
+    };
+
+    calendarElement.addEventListener("click", handleCalendarClick);
+
+    // Cleanup
     return () => {
-      document.head.removeChild(style);
+      document.head.removeChild(calendarTitle);
       calendar.destroy(); // Also ensure you clean up the calendar instance
+      calendarElement.removeEventListener("click", handleCalendarClick);
     };
   }, []);
 
+  const handleTitleChange = (e) => {
+    setEventTitle(e.target.value);
+    if (selectedEvent) {
+      selectedEvent.setProp("title", e.target.value);
+    }
+  };
+
+  const calculateDuration = (start, end) => {
+    const startDate = new Date(`1970-01-01T${start}:00`);
+    const endDate = new Date(`1970-01-01T${end}:00`);
+
+    // Handle cross-day events
+    if (endDate < startDate) {
+      endDate.setDate(endDate.getDate() + 1);
+    }
+
+    const durationMs = endDate - startDate;
+    const durationMinutes = Math.floor(durationMs / (1000 * 60));
+    const hours = Math.floor(durationMinutes / 60);
+    const minutes = durationMinutes % 60;
+
+    return `${hours}h ${minutes}m`;
+  };
+
   return (
-    <div>
+    <div
+      id="main-container"
+      style={{ display: "flex", height: "100vh", width: "100%" }}
+    >
       <div
-        id="mydraggable"
+        id="details-column"
         style={{
-          position: "fixed",
-          zIndex: 2,
-          top: "20px",
-          left: "20px",
-          width: "150px",
-          paddingBottom: "10px",
-          paddingLeft: "5px",
-          border: "1px solid #ccc",
+          width: "200px",
+          padding: "10px",
+          borderRight: "1px solid #ccc",
           backgroundColor: "#c9ada7",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "10px",
-            backgroundColor: "#c9ada7",
-          }}
-        >
-          <h3 style={{ color: "black", margin: "0 10px 0 0" }}>Weeklies</h3>
-          <button
-            id="add-event"
-            style={{
-              backgroundColor: "transparent",
-              border: "none",
-              width: "40px",
-              height: "40px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              padding: "0",
-            }}
-            onClick={handleAddWeekly}
-          >
-            {/* plus icon */}
-            <img
-              src="assets/addIcon.svg"
-              alt="Add Event"
-              width="24"
-              height="24"
+        <h3>Event</h3>
+        {selectedEvent ? (
+          <div>
+            <input
+              type="text"
+              value={eventTitle}
+              onChange={handleTitleChange}
             />
-          </button>
-        </div>
+            <div
+              style={{
+                marginTop: "10px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <div style={{ flex: "1", marginRight: "2px" }}>{startTime}</div>
+              <span style={{ margin: "0 2px" }}>→</span>
+              <div style={{ flex: "1", marginLeft: "2px" }}>{endTime}</div>
+              <div style={{ marginLeft: "10px", color: "gray" }}>
+                {calculateDuration(startTime, endTime)}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p>Select an event to edit</p>
+        )}
       </div>
       <div
         id="mycalendar-container"
         style={{
-          position: "relative",
-          zIndex: 1,
-          marginLeft: "200px",
+          flex: "1",
+          display: "flex",
+          flexDirection: "column",
+          paddingLeft: "2vw",
+          paddingRight: "2vw",
+          paddingBottom: "10vh",
         }}
       >
-        <div
-          id="mycalendar"
-          style={{
-            maxWidth: "1100px",
-            margin: "20px auto",
-          }}
-        ></div>
+        <div id="mycalendar" style={{ flex: "1" }}></div>
       </div>
     </div>
   );
