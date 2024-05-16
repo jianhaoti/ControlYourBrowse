@@ -10,6 +10,7 @@ const Schedule = () => {
   const [endTime, setEndTime] = useState("");
   const defaultColor = "#7B3D3D";
   const [eventColor, setEventColor] = useState(defaultColor);
+  const [isNewEvent, setIsNewEvent] = useState(false);
 
   const formatTimeForInput = (date) => {
     return date.toLocaleTimeString("en-GB", {
@@ -18,12 +19,41 @@ const Schedule = () => {
     });
   };
 
+  const deleteEvent = () => {
+    if (selectedEvent) {
+      selectedEvent.remove();
+    }
+    setSelectedEvent(null);
+    setEventTitle("");
+    setStartTime("");
+    setEndTime("");
+    setEventColor(defaultColor);
+    setIsNewEvent(false);
+  };
+
+  const handleTitleChange = (e) => {
+    setEventTitle(e.target.value);
+  };
+
+  const handleTitleBlur = () => {
+    if (selectedEvent) {
+      if (eventTitle.trim() === "") {
+        deleteEvent();
+      } else if (!eventTitle.startsWith(" ")) {
+        selectedEvent.setProp("title", eventTitle.trim());
+        selectedEvent.setProp("classNames", []); // Remove the unnamed-event class
+        setIsNewEvent(false);
+      }
+    }
+  };
+
   useEffect(() => {
     const calendarTitle = document.createElement("style");
     calendarTitle.innerHTML = `
       /* Colors the columns */
       :root {
         --fc-border-color: black;
+        --fc-default-bg-color: ${defaultColor}; 
       }
 
       /* Gray rows between times */
@@ -102,6 +132,17 @@ const Schedule = () => {
       .fc-timegrid-axis {
         background-color: #d1b2ae; /* Lighter shade */
       }
+
+      /* Unnamed event opacity */
+      .unnamed-event {
+        opacity: 0.5 !important;
+      }
+
+      /* Custom mirror color */
+      .fc-highlight {
+        background-color: ${defaultColor} !important;
+        opacity: 0.1 !important;
+      }
     `;
 
     document.head.appendChild(calendarTitle);
@@ -130,7 +171,6 @@ const Schedule = () => {
       eventResizableFromStart: true, // Allow resizing from start
       eventDurationEditable: true, // Allow event duration editing
       selectable: true, // Enable selection
-      selectMirror: true, // Show a placeholder for the selection
 
       // Event listeners to update time automatically
       eventDrop: (info) => {
@@ -138,39 +178,51 @@ const Schedule = () => {
         setEventTitle(info.event.title);
         setStartTime(formatTimeForInput(info.event.start));
         setEndTime(formatTimeForInput(info.event.end));
+        setIsNewEvent(false); // Event is no longer new
       },
       eventResize: (info) => {
         setSelectedEvent(info.event);
         setEventTitle(info.event.title);
         setStartTime(formatTimeForInput(info.event.start));
         setEndTime(formatTimeForInput(info.event.end));
+        setIsNewEvent(false); // Event is no longer new
       },
 
       select: (info) => {
         const newEvent = calendar.addEvent({
-          title: "New Event",
+          title: "",
           start: info.start,
           end: info.end,
           allDay: info.allDay,
-          eventBackgroundColor: defaultColor,
           backgroundColor: defaultColor,
           borderColor: defaultColor,
+          classNames: ["unnamed-event"], // Add a class for styling
         });
         setSelectedEvent(newEvent);
         setEventTitle(newEvent.title);
         setStartTime(formatTimeForInput(newEvent.start));
         setEndTime(formatTimeForInput(newEvent.end));
         setEventColor(defaultColor);
+        setIsNewEvent(true); // Mark event as newly created
 
         calendar.unselect(); // Clear the selection
       },
 
       eventClick: (info) => {
-        setSelectedEvent(info.event);
-        setEventTitle(info.event.title);
-        setStartTime(formatTimeForInput(info.event.start));
-        setEndTime(formatTimeForInput(info.event.end));
-        setEventColor(info.event.backgroundColor);
+        if (!isNewEvent) {
+          setSelectedEvent(info.event);
+          setEventTitle(info.event.title);
+          setStartTime(formatTimeForInput(info.event.start));
+          setEndTime(formatTimeForInput(info.event.end));
+          setEventColor(info.event.backgroundColor);
+        } else {
+          if (eventTitle.trim() === "" || eventTitle.startsWith(" ")) {
+            deleteEvent();
+          } else {
+            setIsNewEvent(false);
+            info.event.setProp("classNames", []); // Remove the unnamed-event class
+          }
+        }
       },
     });
     calendar.render();
@@ -178,10 +230,15 @@ const Schedule = () => {
     // Handle clicks outside of events
     const handleCalendarClick = (event) => {
       if (!event.target.closest(".fc-event")) {
+        if (isNewEvent && selectedEvent && !eventTitle) {
+          // Discard the event if it's new and unnamed
+          deleteEvent();
+        }
         setSelectedEvent(null);
         setEventTitle("");
         setStartTime("");
         setEndTime("");
+        setIsNewEvent(false); // Reset new event state
       }
     };
 
@@ -200,13 +257,6 @@ const Schedule = () => {
     if (selectedEvent) {
       selectedEvent.setProp("backgroundColor", color);
       selectedEvent.setProp("borderColor", color);
-    }
-  };
-
-  const handleTitleChange = (e) => {
-    setEventTitle(e.target.value);
-    if (selectedEvent) {
-      selectedEvent.setProp("title", e.target.value);
     }
   };
 
@@ -249,6 +299,12 @@ const Schedule = () => {
               type="text"
               value={eventTitle}
               onChange={handleTitleChange}
+              onBlur={handleTitleBlur}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  handleTitleBlur();
+                }
+              }}
             />
             {/* Time */}
             <div
