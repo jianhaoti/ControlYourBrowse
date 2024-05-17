@@ -8,30 +8,9 @@ const Schedule = () => {
   const [eventTitle, setEventTitle] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const defaultColor = "#7B3D3D";
   const [eventColor, setEventColor] = useState(defaultColor);
 
-  const formatTimeForInput = (date) => {
-    return date.toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const handleTitleChange = (e) => {
-    setEventTitle(e.target.value);
-  };
-
-  const handleTitleBlur = () => {
-    if (selectedEvent) {
-      if (!eventTitle.startsWith(" ")) {
-        selectedEvent.setProp("title", eventTitle.trim());
-        selectedEvent.setProp("classNames", []); // Remove the unnamed-event class
-      } else {
-        console.error("Can't with a space");
-      }
-    }
-  };
+  const defaultColor = "#7B3D3D";
 
   useEffect(() => {
     const calendarTitle = document.createElement("style");
@@ -214,6 +193,28 @@ const Schedule = () => {
     };
   }, []);
 
+  const formatTimeForInput = (date) => {
+    return date.toLocaleTimeString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
+  const handleTitleChange = (e) => {
+    setEventTitle(e.target.value);
+  };
+
+  const handleTitleBlur = () => {
+    if (selectedEvent) {
+      if (!eventTitle.startsWith(" ")) {
+        selectedEvent.setProp("title", eventTitle.trim());
+        selectedEvent.setProp("classNames", []); // Remove the unnamed-event class
+      } else {
+        console.error("Can't with a space");
+      }
+    }
+  };
+
   // Handle calender click
   const handleCalendarClick = (event) => {
     // if didn't click on an event
@@ -257,7 +258,9 @@ const Schedule = () => {
 
   // Debugging
   useEffect(() => {
-    console.log(selectedEvent?.title);
+    if (selectedEvent) {
+      console.log(selectedEvent.title);
+    }
   }, [selectedEvent]);
 
   return (
