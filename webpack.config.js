@@ -18,9 +18,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/app.html",
       filename: "App.html",
-      chunks: ["App"],
+      chunks: ["app"], // Ensure the chunk name matches the entry name
     }),
-
     new HtmlWebpackPlugin({
       template: "./src/softblock.html",
       filename: "softblock.html",

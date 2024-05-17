@@ -37,7 +37,7 @@ function Softblock() {
 
   return (
     <div style={{backgroundColor: theme.palette.background.default}}>
-      <Typography variant = "h4">Softblock Page</Typography>
+      <Typography variant = "h4">redoing Page</Typography>
       <AnimatedDaisyLoad />
       {interceptedUrl ? (
         <Typography>Intercepted URL: {interceptedUrl}</Typography>
