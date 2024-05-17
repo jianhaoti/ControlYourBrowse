@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Calendar } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -8,10 +8,13 @@ const Schedule = () => {
   const [eventTitle, setEventTitle] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const defaultColor = "#7B3D3D";
   const [eventColor, setEventColor] = useState(defaultColor);
 
-  const defaultColor = "#7B3D3D";
+  // calender reference
+  const calendarRef = useRef(null);
 
+  // This useEffect mimics domLoaded
   useEffect(() => {
     const calendarTitle = document.createElement("style");
     calendarTitle.innerHTML = `
@@ -180,18 +183,47 @@ const Schedule = () => {
     });
     calendar.render();
 
-    // Event listeners
-    calendarElement.addEventListener("click", handleCalendarClick);
-    document.addEventListener("keydown", handleKeyDown);
-
     // Cleanup
     return () => {
       document.head.removeChild(calendarTitle);
-      calendar.destroy(); // Also ensure you clean up the calendar instance
-      calendarElement.removeEventListener("click", handleCalendarClick);
-      document.removeEventListener("keydown", handleKeyDown);
+      calendar.destroy();
     };
   }, []);
+
+  // Event listeners for removing events.
+  // Important to have seperate useEffect to retrigger upon new selectedEvent
+  useEffect(() => {
+    const handleCalendarClick = (event) => {
+      // if didn't click on an event
+      if (!event.target.closest(".fc-event")) {
+        setSelectedEvent(null);
+        setEventTitle("");
+        setStartTime("");
+        setEndTime("");
+      }
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Backspace" && selectedEvent) {
+        // Assuming you have a function to remove the event from your state or calendar
+        removeEvent(selectedEvent);
+      }
+    };
+
+    const calendarElement = calendarRef.current;
+
+    if (calendarElement) {
+      calendarElement.addEventListener("click", handleCalendarClick);
+    }
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      if (calendarElement) {
+        calendarElement.removeEventListener("click", handleCalendarClick);
+      }
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedEvent]);
 
   const formatTimeForInput = (date) => {
     return date.toLocaleTimeString("en-GB", {
@@ -215,20 +247,12 @@ const Schedule = () => {
     }
   };
 
-  // Handle calender click
-  const handleCalendarClick = (event) => {
-    // if didn't click on an event
-    if (!event.target.closest(".fc-event")) {
-      // setSelectedEvent(null);
-      setEventTitle("");
-      setStartTime("");
-      setEndTime("");
-    }
-  };
-  const handleKeyDown = (event) => {
-    if (event.key === "Backspace") {
-      console.log("selected event is", selectedEvent);
-    }
+  const removeEvent = (event) => {
+    event.remove();
+    setSelectedEvent(null);
+    setEventTitle("");
+    setStartTime(null);
+    setEndTime(null);
   };
 
   const handleColorChange = (color) => {
@@ -255,13 +279,6 @@ const Schedule = () => {
 
     return `${hours}h ${minutes}m`;
   };
-
-  // Debugging
-  useEffect(() => {
-    if (selectedEvent) {
-      console.log(selectedEvent.title);
-    }
-  }, [selectedEvent]);
 
   return (
     <div
@@ -322,7 +339,10 @@ const Schedule = () => {
           <p>Select an event to edit</p>
         )}
       </div>
+
+      {/* Calendar */}
       <div
+        ref={calendarRef}
         id="mycalendar-container"
         style={{
           flex: "1",
