@@ -10,7 +10,6 @@ const Schedule = () => {
   const [endTime, setEndTime] = useState("");
   const defaultColor = "#7B3D3D";
   const [eventColor, setEventColor] = useState(defaultColor);
-  const [isNewEvent, setIsNewEvent] = useState(false);
 
   const formatTimeForInput = (date) => {
     return date.toLocaleTimeString("en-GB", {
@@ -19,30 +18,17 @@ const Schedule = () => {
     });
   };
 
-  const deleteEvent = () => {
-    if (selectedEvent) {
-      selectedEvent.remove();
-    }
-    setSelectedEvent(null);
-    setEventTitle("");
-    setStartTime("");
-    setEndTime("");
-    setEventColor(defaultColor);
-    setIsNewEvent(false);
-  };
-
   const handleTitleChange = (e) => {
     setEventTitle(e.target.value);
   };
 
   const handleTitleBlur = () => {
     if (selectedEvent) {
-      if (eventTitle.trim() === "") {
-        deleteEvent();
-      } else if (!eventTitle.startsWith(" ")) {
+      if (!eventTitle.startsWith(" ")) {
         selectedEvent.setProp("title", eventTitle.trim());
         selectedEvent.setProp("classNames", []); // Remove the unnamed-event class
-        setIsNewEvent(false);
+      } else {
+        console.error("Can't with a space");
       }
     }
   };
@@ -178,14 +164,12 @@ const Schedule = () => {
         setEventTitle(info.event.title);
         setStartTime(formatTimeForInput(info.event.start));
         setEndTime(formatTimeForInput(info.event.end));
-        setIsNewEvent(false); // Event is no longer new
       },
       eventResize: (info) => {
         setSelectedEvent(info.event);
         setEventTitle(info.event.title);
         setStartTime(formatTimeForInput(info.event.start));
         setEndTime(formatTimeForInput(info.event.end));
-        setIsNewEvent(false); // Event is no longer new
       },
 
       select: (info) => {
@@ -203,54 +187,48 @@ const Schedule = () => {
         setStartTime(formatTimeForInput(newEvent.start));
         setEndTime(formatTimeForInput(newEvent.end));
         setEventColor(defaultColor);
-        setIsNewEvent(true); // Mark event as newly created
 
-        calendar.unselect(); // Clear the selection
+        calendar.unselect();
       },
 
       eventClick: (info) => {
-        if (!isNewEvent) {
-          setSelectedEvent(info.event);
-          setEventTitle(info.event.title);
-          setStartTime(formatTimeForInput(info.event.start));
-          setEndTime(formatTimeForInput(info.event.end));
-          setEventColor(info.event.backgroundColor);
-        } else {
-          if (eventTitle.trim() === "" || eventTitle.startsWith(" ")) {
-            deleteEvent();
-          } else {
-            setIsNewEvent(false);
-            info.event.setProp("classNames", []); // Remove the unnamed-event class
-          }
-        }
+        setSelectedEvent(info.event);
+        setEventTitle(info.event.title);
+        setStartTime(formatTimeForInput(info.event.start));
+        setEndTime(formatTimeForInput(info.event.end));
+        setEventColor(info.event.backgroundColor);
       },
     });
     calendar.render();
 
-    // Handle clicks outside of events
-    const handleCalendarClick = (event) => {
-      if (!event.target.closest(".fc-event")) {
-        if (isNewEvent && selectedEvent && !eventTitle) {
-          // Discard the event if it's new and unnamed
-          deleteEvent();
-        }
-        setSelectedEvent(null);
-        setEventTitle("");
-        setStartTime("");
-        setEndTime("");
-        setIsNewEvent(false); // Reset new event state
-      }
-    };
-
+    // Event listeners
     calendarElement.addEventListener("click", handleCalendarClick);
+    document.addEventListener("keydown", handleKeyDown);
 
     // Cleanup
     return () => {
       document.head.removeChild(calendarTitle);
       calendar.destroy(); // Also ensure you clean up the calendar instance
       calendarElement.removeEventListener("click", handleCalendarClick);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, []);
+
+  // Handle calender click
+  const handleCalendarClick = (event) => {
+    // if didn't click on an event
+    if (!event.target.closest(".fc-event")) {
+      // setSelectedEvent(null);
+      setEventTitle("");
+      setStartTime("");
+      setEndTime("");
+    }
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Backspace") {
+      console.log("selected event is", selectedEvent);
+    }
+  };
 
   const handleColorChange = (color) => {
     setEventColor(color);
@@ -277,6 +255,11 @@ const Schedule = () => {
     return `${hours}h ${minutes}m`;
   };
 
+  // Debugging
+  useEffect(() => {
+    console.log(selectedEvent?.title);
+  }, [selectedEvent]);
+
   return (
     <div
       id="main-container"
@@ -300,7 +283,7 @@ const Schedule = () => {
               value={eventTitle}
               onChange={handleTitleChange}
               onBlur={handleTitleBlur}
-              onKeyPress={(e) => {
+              onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   handleTitleBlur();
                 }
