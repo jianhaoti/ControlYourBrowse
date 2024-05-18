@@ -147,48 +147,54 @@ const Schedule = () => {
         updateEventDetails(info.event);
       },
 
+      // event creation
       select: (info) => {
-        // Remove unnamed events before making new events
+        // Remove unnamed events
         calendar.getEvents().forEach((event) => {
           if (!event.title.trim()) {
             event.remove();
           }
         });
 
-        const newEvent = calendar.addEvent({
-          title: "",
-          start: info.start,
-          end: info.end,
-          allDay: info.allDay,
-          backgroundColor: defaultColor,
-          borderColor: defaultColor,
-          classNames: ["unnamed-event"], // makes it opaque at the beginning (see css)
-        });
-        updateEventDetails(newEvent);
-        setEventColor(defaultColor);
-
-        setTimeout(() => {
-          if (titleInputRef.current) {
-            titleInputRef.current.focus();
-          }
-        }, 0);
-
+        createEvent(info);
         calendar.unselect();
       },
 
       eventClick: (info) => {
+        // Remove unnamed events
+        calendar.getEvents().forEach((event) => {
+          if (!event.title.trim()) {
+            event.remove();
+          }
+        });
         updateEventDetails(info.event);
         setEventColor(info.event.backgroundColor);
       },
     });
     calendar.render();
 
+    const createEvent = (info) => {
+      const newEvent = calendar.addEvent({
+        title: "",
+        start: info.start,
+        end: info.end,
+        backgroundColor: defaultColor,
+        borderColor: defaultColor,
+        classNames: ["unnamed-event"],
+      });
+      updateEventDetails(newEvent);
+      setEventColor(defaultColor);
+
+      setTimeout(() => {
+        if (titleInputRef.current) {
+          titleInputRef.current.focus();
+        }
+      }, 0);
+    };
     // calender background click logic
     const handleCalendarClick = (click) => {
-      // removes untitled events
       calendar.getEvents().forEach((event) => {
-        console.log(event.title);
-        if (event.title === "") {
+        if (!event.title.trim()) {
           event.remove();
         }
       });
@@ -202,10 +208,10 @@ const Schedule = () => {
       }
     };
 
-    calendarElement.addEventListener("click", handleCalendarClick);
+    calendarElement.addEventListener("handleclick", handleCalendarClick);
     // Cleanup
     return () => {
-      calendarElement.removeEventListener("click", handleCalendarClick);
+      calendarElement.removeEventListener("handleclick", handleCalendarClick);
 
       document.head.removeChild(calendarTitle);
       calendar.destroy();
