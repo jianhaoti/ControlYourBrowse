@@ -2,11 +2,23 @@ import React, { useEffect, useState } from "react";
 import { Typography, Box } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import AnimatedDaisyLoad from "./AnimatedDaisyLoad";
-
+import TypewriterComponent from "typewriter-effect";
 
 function Softblock() {
   const [interceptedUrl, setInterceptedUrl] = useState("");
+  const [animationComplete, setAnimationComplete] = useState(false);
   const theme = useTheme();
+
+  const typewriterStyle = {
+    fontFamily: theme.typography.body2.fontFamily,
+    fontWeight: 300,
+    fontSize: theme.typography.body2.fontSize,
+    color: theme.typography.body2.color,
+    position: "center",
+    top: "-2rem", // Adjust the top position as needed
+    textAlign: "center",
+    fontStyle:"italic",
+  };
 
   useEffect(() => {
     const extensionId = "gnbpdhalckpbngapiidobojpbeljnjlm"; // Replace with your actual extension ID
@@ -29,11 +41,14 @@ function Softblock() {
   }, []);
 
   useEffect(() => {
-    console.log("cssbaseline") // Check what this outputs\
+    console.log("cssbaseline") // Check what this outputs
     debugger;
     console.log(theme);
   }, []);
-  
+
+  const handleAnimationComplete = () => {
+    setAnimationComplete(true);
+  };
 
   return (
     <Box 
@@ -46,13 +61,33 @@ function Softblock() {
         backgroundColor: theme.palette.background.default 
       }}
     >
-
-      <Typography variant = "h4">redoing Page</Typography>
-      <AnimatedDaisyLoad />
-      {interceptedUrl ? (
-        <Typography>Intercepted URL: {interceptedUrl}</Typography>
-      ) : (
-        <Typography>No URL intercepted or already cleared.</Typography>
+      <Typography variant="h4">Redoing Page</Typography>
+      <AnimatedDaisyLoad onAnimationComplete={handleAnimationComplete}/>
+      {animationComplete && (
+        <>
+          {interceptedUrl ? (
+            <div style={typewriterStyle}>
+              <TypewriterComponent
+                options={{
+                  delay: 50,
+                }}
+                onInit={(typewriter) => {
+                  typewriter.typeString(`The Intercepted URL: ${interceptedUrl}`)
+                    .callFunction(() => {
+                      console.log('String typed out!');
+                    })
+                    .pauseFor(2500)
+                    .callFunction(() => {
+                      console.log('All strings were deleted');
+                    })
+                    .start();
+                }}
+              />
+            </div>
+          ) : (
+            <Typography>No URL intercepted or already cleared.</Typography>
+          )}
+        </>
       )}
     </Box>
   );

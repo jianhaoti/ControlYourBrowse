@@ -12,7 +12,7 @@ const variants = {
     strokeDasharray: `${totalLength} ${totalLength}`,  // Keeps the dash array constant
     strokeDashoffset: 0,                          // Animates offset to 0 to reveal the path
     transition: {
-      duration: 8,
+      duration: 6,
       ease: "easeInOut"
     }
   },
@@ -28,13 +28,13 @@ const variants = {
   fadeOut: {
     opacity: 0,
     transition: {
-      duration: 2,
+      duration: 4,
       ease: "easeInOut"
     }
   }
 };
 
-const AnimatedDaisyLoad = () => {
+const AnimatedDaisyLoad = ({onAnimationComplete}) => {
   const controls = useAnimation();
 
   useEffect(() => {
@@ -46,6 +46,20 @@ const AnimatedDaisyLoad = () => {
 
     sequence();
   }, [controls]);
+
+  useEffect(() => {
+    // Simulate animation completion after 2 seconds for demonstration purposes
+    const timer = setTimeout(() => {
+      if (onAnimationComplete) {
+        onAnimationComplete();
+      }
+    }, 7000);
+
+    return () => clearTimeout(timer);
+  }, [onAnimationComplete]);
+  //this sets onAnimationComplete to true after timer completes 
+  //why is this in the dependency array?
+
 
   return (
     <motion.div
