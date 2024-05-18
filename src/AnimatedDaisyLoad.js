@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
+import { Box, Typography } from '@mui/material';
 
 const totalLength = 2400;
 
@@ -13,16 +15,28 @@ const variants = {
     strokeDashoffset: 0,                          // Animates offset to 0 to reveal the path
     transition: {
       duration: 6,
-      ease: "easeInOut"
+      ease: "linear"
+    }
+  },
+  jitter: {
+    x: [0, -5,5, -5, 2, 0], // Horizontal jitter effect
+    y: [0, -5,5, -5, 2, 0], // Vertical jitter effect
+    opacity: [1,0.8,1,0.7,1,1,0.8,0.9, 0.7, 1],
+    transition: {
+      duration: 1.2,
+      ease: "linear",
+      times: [0, 0.25, 0.49, 0.6, 0.8, 1],
     }
   },
   zoomOut: {
     scale: [1,0.5],
     // originX: "40%",
     // originY: "50%",
+    //so it doesnt move when we transition to this 
     transition: {
       duration: 3,
-      ease: "easeInOut"
+      ease: "linear"
+
     }
   },
   fadeOut: {
@@ -34,12 +48,17 @@ const variants = {
   }
 };
 
+
 const AnimatedDaisyLoad = ({onAnimationComplete}) => {
   const controls = useAnimation();
-
+  
+  
+  const [displayText, setDisplayText] = useState(false);
+  
   useEffect(() => {
     const sequence = async () => {
       await controls.start("visible");
+      await controls.start("jitter");
       await controls.start("zoomOut");
       await controls.start("fadeOut");
     };
@@ -60,8 +79,31 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
   //this sets onAnimationComplete to true after timer completes 
   //why is this in the dependency array?
 
+  useEffect(() => {
+    // set displaytext to true
+    const timer = setTimeout(() => {
+      if (onAnimationComplete) {
+        setDisplayText(true);
+      }
+    }, 14000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const fadeInVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: [0,1],
+      transition: {
+        duration: 3.7,
+        ease: "easeInOut"
+      }
+    }
+  };
 
   return (
+    <div>
+      { !displayText ? ( 
     <motion.div
       initial="hidden"
       animate={controls}
@@ -70,9 +112,10 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
       <motion.svg
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        width="500px"
-        height="500px"
+        width="520px"
+        height="520px"
         viewBox="0 0 512 512"
+        style ={{transformOrigin: 'center'}} //to prevent ifrom nudging up between tranasitions 
       >
         <path
           d="M509.176,249.196c-20.497-20.508-46.3-34.693-74.232-41.144c20.978-19.545,36.223-44.749,43.722-72.746
@@ -149,6 +192,25 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
         />
     </motion.svg>
     </motion.div>
+      ): (
+        <Box sx={{height: '520px', width: '520px',
+        justifyContent: 'center', alignItems: 'center', marginTop: '4rem'
+        }} >
+         <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={fadeInVariants}
+    >
+        <Typography sx={{
+          fontSize: '48px',
+          fontStyle: 'italic',
+          fontWeight: 200,
+          textAlign: 'center',
+        }}>Take a breather. Focus mode is on</Typography>
+        </motion.div>
+        </Box>
+      )}
+    </div>
   );
 };
 
