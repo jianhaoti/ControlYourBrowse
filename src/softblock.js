@@ -4,6 +4,8 @@ import { useTheme } from '@mui/material/styles';
 import AnimatedDaisyLoad from "./AnimatedDaisyLoad";
 import TypewriterComponent from "typewriter-effect";
 import { ProgressBar } from "./ProgressBar";
+import { motion, useAnimation } from 'framer-motion';
+
 
 function Softblock() {
   const [interceptedUrl, setInterceptedUrl] = useState("");
@@ -19,6 +21,17 @@ function Softblock() {
     top: "-2rem", // Adjust the top position as needed
     textAlign: "center",
     fontStyle:"italic",
+  };
+
+  const fadeInVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: [0,1],
+      transition: {
+        duration: 3.7,
+        ease: "easeInOut"
+      }
+    }
   };
 
   useEffect(() => {
@@ -62,7 +75,7 @@ function Softblock() {
         backgroundColor: theme.palette.background.default 
       }}
     >
-      <Typography variant="h4">Redoing Page</Typography>
+      {/* <Typography variant="h4">Redoing Page</Typography> */}
       <AnimatedDaisyLoad onAnimationComplete={handleAnimationComplete}/>
       {animationComplete && (
         <>
@@ -84,7 +97,13 @@ function Softblock() {
                     .start();
                 }}
               />
-              <ProgressBar percents={75} caption="Loading..." />
+                 <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={fadeInVariants}
+    >
+              <ProgressBar percents={50} caption="Goal Progress" />
+              </motion.div>
             </div>
           ) : (
             <Typography>No URL intercepted or already cleared.</Typography>
