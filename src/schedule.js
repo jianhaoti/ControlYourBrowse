@@ -10,6 +10,7 @@ const Schedule = () => {
   const [endTime, setEndTime] = useState("");
   const defaultColor = "#7B3D3D";
   const [eventColor, setEventColor] = useState(defaultColor);
+  const titleInputRef = useRef(null);
 
   // This useEffect mimics domLoaded
   useEffect(() => {
@@ -166,13 +167,19 @@ const Schedule = () => {
           allDay: info.allDay,
           backgroundColor: defaultColor,
           borderColor: defaultColor,
-          classNames: ["unnamed-event"], // Add a class for styling
+          classNames: ["unnamed-event"], // makes it opaque at the beginning (see css)
         });
         setSelectedEvent(newEvent);
         setEventTitle(newEvent.title);
         setStartTime(formatTimeForInput(newEvent.start));
         setEndTime(formatTimeForInput(newEvent.end));
         setEventColor(defaultColor);
+
+        setTimeout(() => {
+          if (titleInputRef.current) {
+            titleInputRef.current.focus();
+          }
+        }, 0);
 
         calendar.unselect();
       },
@@ -225,7 +232,11 @@ const Schedule = () => {
   }, [selectedEvent]);
 
   const handleKeyDown = (keypress) => {
-    if (keypress.key === "Backspace" && selectedEvent) {
+    if (
+      keypress.key === "Backspace" &&
+      selectedEvent &&
+      document.activeElement !== titleInputRef.current // doesnt delete the event, if you're editing the title
+    ) {
       removeEvent(selectedEvent);
     }
   };
@@ -310,6 +321,7 @@ const Schedule = () => {
             {/* Title */}
             <input
               type="text"
+              ref={titleInputRef}
               value={eventTitle}
               onChange={handleTitleChange}
               onBlur={handleTitleBlur}
