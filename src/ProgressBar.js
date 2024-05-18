@@ -7,39 +7,32 @@ import { MotionBox } from "./motion-box";
 import { IntersectionContext } from "./intersection-observer";
 import { useTheme } from '@mui/material/styles';
 
-// const theme = useTheme();
-
 const Bar = styled(Box)`
   overflow: hidden;
+  position: relative;
+  border-radius: 2px;
 `;
-Bar.defaultProps = {
-  position: "relative",
-  borderRadius: 2,
-};
 
-const BarFilling = styled(MotionBox)``;
-BarFilling.defaultProps = {
-  position: "absolute",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100%",
-};
+const BarFilling = styled(MotionBox)`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+`;
 
-const BarCaption = styled(Box)``;
-BarCaption.defaultProps = {
-  position: "relative",
-  textAlign: "right",
-  fontWeight: 0,
-  pr: 2,
-};
+const BarCaption = styled(Box)`
+  position: relative;
+  text-align: right;
+  font-weight: 0;
+  padding-right: 2px;
+`;
 
-const BarPercents = styled(Typography)``;
-BarPercents.defaultProps = {
-  color: "#000",
-  fontWeight: 2,
-  pl: 1,
-};
+const BarPercents = styled(Typography)`
+  color: #000;
+  font-weight: 2;
+  padding-left: 1px;
+`;
 
 export const ProgressBar = ({
   percents,
@@ -49,21 +42,16 @@ export const ProgressBar = ({
   easing = "easeInOut",
   barWidth = 300,
   barHeight = 24,
-//   baseColor = "#fff",
 }) => {
-
   const { inView } = useContext(IntersectionContext);
-
   const percentsOffset = (percents - 100) * (barWidth / 100);
-
   const theme = useTheme();
-
-  const progressColor = theme.palette.primary.blue
-  const baseColor = theme.palette.primary.light;
+  const progressColor = theme.palette.primary.blue || "#0000FF";
+  const baseColor = theme.palette.primary.light || "#FFFFFF";
 
   const transition = {
-    duration: duration,
-    delay: delay,
+    duration,
+    delay,
     ease: easing,
   };
 

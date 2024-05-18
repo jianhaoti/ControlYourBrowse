@@ -102,7 +102,7 @@ function Softblock() {
       animate="visible"
       variants={fadeInVariants}
     >
-              <ProgressBar percents={50} caption="Goal Progress" />
+              <ProgressBar percents={50} caption="Goal Progress"/>
               </motion.div>
             </div>
           ) : (
