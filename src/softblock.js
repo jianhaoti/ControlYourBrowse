@@ -3,6 +3,7 @@ import { Typography, Box } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import AnimatedDaisyLoad from "./AnimatedDaisyLoad";
 import TypewriterComponent from "typewriter-effect";
+import { ProgressBar } from "./ProgressBar";
 
 function Softblock() {
   const [interceptedUrl, setInterceptedUrl] = useState("");
@@ -83,6 +84,7 @@ function Softblock() {
                     .start();
                 }}
               />
+              <ProgressBar percents={75} caption="Loading..." />
             </div>
           ) : (
             <Typography>No URL intercepted or already cleared.</Typography>
