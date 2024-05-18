@@ -259,7 +259,7 @@ const Schedule = () => {
 
   const handleTitleBlur = () => {
     if (selectedEvent) {
-      if (!eventTitle.startsWith(" ")) {
+      if (!eventTitle.startsWith(" ") && eventTitle !== "") {
         selectedEvent.setProp("title", eventTitle.trim());
         selectedEvent.setProp("classNames", []); // Remove the unnamed-event class
       } else {
