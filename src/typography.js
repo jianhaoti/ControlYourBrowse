@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Box } from "./box";
 
-import { compose, lineHeight } from "styled-system";
+import { lineHeight } from "styled-system";
+import { compose } from "@styled-system/core";
 
 const composedHelpers = compose(lineHeight);
 
