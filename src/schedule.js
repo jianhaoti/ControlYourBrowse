@@ -174,6 +174,7 @@ const Schedule = () => {
     calendar.render();
 
     const createEvent = (info) => {
+      //calendar.addEvent updates the API
       const newEvent = calendar.addEvent({
         title: "",
         start: info.start,
@@ -191,6 +192,7 @@ const Schedule = () => {
         }
       }, 0);
     };
+
     // calender background click logic
     const handleCalendarClick = (click) => {
       calendar.getEvents().forEach((event) => {
@@ -208,10 +210,10 @@ const Schedule = () => {
       }
     };
 
-    calendarElement.addEventListener("handleclick", handleCalendarClick);
+    calendarElement.addEventListener("mousedown", handleCalendarClick);
     // Cleanup
     return () => {
-      calendarElement.removeEventListener("handleclick", handleCalendarClick);
+      calendarElement.removeEventListener("mousedown", handleCalendarClick);
 
       document.head.removeChild(calendarTitle);
       calendar.destroy();
