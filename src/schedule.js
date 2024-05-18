@@ -12,22 +12,6 @@ const Schedule = () => {
   const defaultColor = "#7B3D3D";
   const [eventColor, setEventColor] = useState(defaultColor);
   const titleInputRef = useRef(null);
-  const [circleSize, setCircleSize] = useState(28); // full screen default size
-
-  // circle size change upon resizing window
-  useEffect(() => {
-    const updateCircleSize = () => {
-      const newSize = Math.max(20, Math.min(40, window.innerWidth / 30));
-      setCircleSize(newSize);
-    };
-
-    updateCircleSize(); // Initial size calculation
-    window.addEventListener("resize", updateCircleSize);
-
-    return () => {
-      window.removeEventListener("resize", updateCircleSize);
-    };
-  }, []);
 
   // This useEffect mimics domLoaded
   useEffect(() => {
