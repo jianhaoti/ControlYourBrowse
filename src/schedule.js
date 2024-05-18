@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Calendar } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
+import { CirclePicker } from "react-color";
 
 const Schedule = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -11,6 +12,22 @@ const Schedule = () => {
   const defaultColor = "#7B3D3D";
   const [eventColor, setEventColor] = useState(defaultColor);
   const titleInputRef = useRef(null);
+  const [circleSize, setCircleSize] = useState(28); // full screen default size
+
+  // circle size change upon resizing window
+  useEffect(() => {
+    const updateCircleSize = () => {
+      const newSize = Math.max(20, Math.min(40, window.innerWidth / 30));
+      setCircleSize(newSize);
+    };
+
+    updateCircleSize(); // Initial size calculation
+    window.addEventListener("resize", updateCircleSize);
+
+    return () => {
+      window.removeEventListener("resize", updateCircleSize);
+    };
+  }, []);
 
   // This useEffect mimics domLoaded
   useEffect(() => {
@@ -140,16 +157,10 @@ const Schedule = () => {
 
       // Event listeners to update time automatically
       eventDrop: (info) => {
-        setSelectedEvent(info.event);
-        setEventTitle(info.event.title);
-        setStartTime(formatTimeForInput(info.event.start));
-        setEndTime(formatTimeForInput(info.event.end));
+        updateEventDetails(info.event);
       },
       eventResize: (info) => {
-        setSelectedEvent(info.event);
-        setEventTitle(info.event.title);
-        setStartTime(formatTimeForInput(info.event.start));
-        setEndTime(formatTimeForInput(info.event.end));
+        updateEventDetails(info.event);
       },
 
       select: (info) => {
@@ -169,10 +180,7 @@ const Schedule = () => {
           borderColor: defaultColor,
           classNames: ["unnamed-event"], // makes it opaque at the beginning (see css)
         });
-        setSelectedEvent(newEvent);
-        setEventTitle(newEvent.title);
-        setStartTime(formatTimeForInput(newEvent.start));
-        setEndTime(formatTimeForInput(newEvent.end));
+        updateEventDetails(newEvent);
         setEventColor(defaultColor);
 
         setTimeout(() => {
@@ -185,10 +193,7 @@ const Schedule = () => {
       },
 
       eventClick: (info) => {
-        setSelectedEvent(info.event);
-        setEventTitle(info.event.title);
-        setStartTime(formatTimeForInput(info.event.start));
-        setEndTime(formatTimeForInput(info.event.end));
+        updateEventDetails(info.event);
         setEventColor(info.event.backgroundColor);
       },
     });
@@ -241,6 +246,17 @@ const Schedule = () => {
     }
   };
 
+  const updateEventDetails = (event) => {
+    // Preserve the title if it's being edited
+    if (eventTitle) {
+      event.setProp("title", eventTitle);
+    }
+    setSelectedEvent(event);
+    setEventTitle(event.title);
+    setStartTime(formatTimeForInput(event.start));
+    setEndTime(formatTimeForInput(event.end));
+  };
+
   // Debugging
   // useEffect(() => {
   //   console.log(selectedEvent);
@@ -262,8 +278,6 @@ const Schedule = () => {
       if (!eventTitle.startsWith(" ") && eventTitle !== "") {
         selectedEvent.setProp("title", eventTitle.trim());
         selectedEvent.setProp("classNames", []); // Remove the unnamed-event class
-      } else {
-        console.error("Can't with a space");
       }
     }
   };
@@ -349,11 +363,17 @@ const Schedule = () => {
             {/* Color */}
             <div style={{ marginTop: "10px" }}>
               <label>Tag: </label>
-              <input
+              {/* <input
                 type="color"
                 value={eventColor}
                 onChange={(e) => handleColorChange(e.target.value)}
                 style={{ marginLeft: "10px" }}
+              /> */}
+              <CirclePicker
+                color={eventColor}
+                onChangeComplete={(color) => handleColorChange(color.hex)}
+                width="100%"
+                circleSize={20}
               />
             </div>
           </div>
