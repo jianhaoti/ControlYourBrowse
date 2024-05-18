@@ -11,12 +11,11 @@ const Schedule = () => {
   const defaultColor = "#7B3D3D";
   const [eventColor, setEventColor] = useState(defaultColor);
 
-  // calender reference
-  const calendarRef = useRef(null);
-
   // This useEffect mimics domLoaded
   useEffect(() => {
     const calendarTitle = document.createElement("style");
+    const calendarElement = document.getElementById("mycalendar");
+
     calendarTitle.innerHTML = `
       /* Colors the columns */
       :root {
@@ -114,8 +113,6 @@ const Schedule = () => {
     `;
 
     document.head.appendChild(calendarTitle);
-
-    const calendarElement = document.getElementById("mycalendar");
     const calendar = new Calendar(calendarElement, {
       plugins: [timeGridPlugin, interactionPlugin],
       headerToolbar: {
@@ -155,6 +152,13 @@ const Schedule = () => {
       },
 
       select: (info) => {
+        // Remove unnamed events before making new events
+        calendar.getEvents().forEach((event) => {
+          if (!event.title.trim()) {
+            event.remove();
+          }
+        });
+
         const newEvent = calendar.addEvent({
           title: "",
           start: info.start,
@@ -183,19 +187,18 @@ const Schedule = () => {
     });
     calendar.render();
 
-    // Cleanup
-    return () => {
-      document.head.removeChild(calendarTitle);
-      calendar.destroy();
-    };
-  }, []);
+    // calender background click logic
+    const handleCalendarClick = (click) => {
+      // removes untitled events
+      calendar.getEvents().forEach((event) => {
+        console.log(event.title);
+        if (event.title === "") {
+          event.remove();
+        }
+      });
 
-  // Event listeners for removing events.
-  // Important to have seperate useEffect to retrigger upon new selectedEvent
-  useEffect(() => {
-    const handleCalendarClick = (event) => {
-      // if didn't click on an event
-      if (!event.target.closest(".fc-event")) {
+      // reset selected events
+      if (!click.target.closest(".fc-event")) {
         setSelectedEvent(null);
         setEventTitle("");
         setStartTime("");
@@ -203,27 +206,34 @@ const Schedule = () => {
       }
     };
 
-    const handleKeyDown = (event) => {
-      if (event.key === "Backspace" && selectedEvent) {
-        // Assuming you have a function to remove the event from your state or calendar
-        removeEvent(selectedEvent);
-      }
-    };
-
-    const calendarElement = calendarRef.current;
-
-    if (calendarElement) {
-      calendarElement.addEventListener("click", handleCalendarClick);
-    }
-    document.addEventListener("keydown", handleKeyDown);
-
+    calendarElement.addEventListener("click", handleCalendarClick);
+    // Cleanup
     return () => {
-      if (calendarElement) {
-        calendarElement.removeEventListener("click", handleCalendarClick);
-      }
+      calendarElement.removeEventListener("click", handleCalendarClick);
+
+      document.head.removeChild(calendarTitle);
+      calendar.destroy();
+    };
+  }, []);
+
+  // backspace removes event
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
   }, [selectedEvent]);
+
+  const handleKeyDown = (keypress) => {
+    if (keypress.key === "Backspace" && selectedEvent) {
+      removeEvent(selectedEvent);
+    }
+  };
+
+  // Debugging
+  // useEffect(() => {
+  //   console.log(selectedEvent);
+  // }, [selectedEvent]);
 
   const formatTimeForInput = (date) => {
     return date.toLocaleTimeString("en-GB", {
@@ -342,7 +352,6 @@ const Schedule = () => {
 
       {/* Calendar */}
       <div
-        ref={calendarRef}
         id="mycalendar-container"
         style={{
           flex: "1",
