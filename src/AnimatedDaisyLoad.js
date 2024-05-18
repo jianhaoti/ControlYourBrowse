@@ -17,11 +17,11 @@ const variants = {
     }
   },
   zoomOut: {
-    scale: 0.5,
-    originX: "40%",
-    originY: "50%",
+    scale: [1,0.5],
+    // originX: "40%",
+    // originY: "50%",
     transition: {
-      duration: 2,
+      duration: 3,
       ease: "easeInOut"
     }
   },
