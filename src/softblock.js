@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Typography } from "@mui/material";
+import { Typography, Box } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import AnimatedDaisyLoad from "./AnimatedDaisyLoad";
 
@@ -36,7 +36,17 @@ function Softblock() {
   
 
   return (
-    <div style={{backgroundColor: theme.palette.background.default}}>
+    <Box 
+      sx={{ 
+        height: '100vh', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        backgroundColor: theme.palette.background.default 
+      }}
+    >
+
       <Typography variant = "h4">redoing Page</Typography>
       <AnimatedDaisyLoad />
       {interceptedUrl ? (
@@ -44,7 +54,7 @@ function Softblock() {
       ) : (
         <Typography>No URL intercepted or already cleared.</Typography>
       )}
-    </div>
+    </Box>
   );
 }
 
