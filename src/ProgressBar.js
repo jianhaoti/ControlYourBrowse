@@ -1,90 +1,69 @@
-import React, { useContext } from "react";
-import styled from "styled-components";
-import { Box } from "./box";
-import { Flex } from "./flex";
-import { Typography } from "./typography";
-import { MotionBox } from "./motion-box";
-import { IntersectionContext } from "./intersection-observer";
-import { useTheme } from '@mui/material/styles';
+import React, { useEffect, useState } from "react";
+import styled, { css } from "styled-components";
 
-const Bar = styled(Box)`
-  overflow: hidden;
-  position: relative;
-  border-radius: 2px;
-`;
+const ProgressBar = () => {
+  const [percent, setPercent] = useState(0);
 
-const BarFilling = styled(MotionBox)`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`;
-
-const BarCaption = styled(Box)`
-  position: relative;
-  text-align: right;
-  font-weight: 0;
-  padding-right: 2px;
-`;
-
-const BarPercents = styled(Typography)`
-  color: #000;
-  font-weight: 2;
-  padding-left: 1px;
-`;
-
-export const ProgressBar = ({
-  percents,
-  caption,
-  duration = 3,
-  delay = 0.5,
-  easing = "easeInOut",
-  barWidth = 300,
-  barHeight = 24,
-}) => {
-  const { inView } = useContext(IntersectionContext);
-  const percentsOffset = (percents - 100) * (barWidth / 100);
-  const theme = useTheme();
-  const progressColor = theme.palette.primary.blue || "#0000FF";
-  const baseColor = theme.palette.primary.light || "#FFFFFF";
-
-  const transition = {
-    duration,
-    delay,
-    ease: easing,
-  };
-
-  const variants = {
-    enter: {
-      x: -barWidth,
-    },
-    animate: {
-      x: [-barWidth, percentsOffset],
-      transition,
-    },
-  };
+  // Simulate the progress bar shooting to the right on mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPercent(75);
+    }, 100); // Slight delay to ensure the initial render is complete
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
-    <Flex my={1}>
-      <Bar width={barWidth} height={barHeight} bg={baseColor}>
-        <BarFilling
-          variants={variants}
-          initial="enter"
-          animate={inView ? "animate" : "enter"}
-          exit="enter"
-          bg={progressColor}
-        />
-        {caption && (
-          <BarCaption
-            fontSize={barHeight >= 20 ? 2 : "8px"}
-            lineHeight={`${barHeight}px`}
-          >
-            {caption}
-          </BarCaption>
-        )}
-      </Bar>
-      <BarPercents>{percents}%</BarPercents>
-    </Flex>
+    <div>
+      <BarContainer>
+        <Bar percent={percent} />
+        <GoalText>{percent}% Goal Progress</GoalText>
+      </BarContainer>
+    </div>
   );
 };
+
+
+
+const BarContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const Bar = styled.div`
+  width: 200px;
+  height: 25px;
+  border-radius: 10px;
+  background: linear-gradient(to right, pink 50%, #e9e7e2 0);
+  background-size: 200% 100%;
+  background-position: right;
+  ${({ percent }) => css`
+    background-position: ${100 - percent}%;
+    transition: all 0.5s ease;
+  `}
+`;
+
+const GoalText = styled.span`
+  font-size: 16px;
+  color: #333;
+`;
+
+const PercentBar = styled.div`
+  width: 200px;
+  height: 25px;
+  border-radius: 10px;
+  background: linear-gradient(to right, skyblue 50%, #e9e7e2 0);
+  background-size: 200% 100%;
+  background-position: right;
+  ${({ percent }) => css`
+    background-position: ${100 - percent}%;
+    transition: all 0.3s ease;
+  `}
+`;
+
+const Box = styled.div`
+  display: flex;
+  gap: 8px;
+`;
+
+export default ProgressBar;

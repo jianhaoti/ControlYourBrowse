@@ -3,8 +3,8 @@ import { Typography, Box } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import AnimatedDaisyLoad from "./AnimatedDaisyLoad";
 import TypewriterComponent from "typewriter-effect";
-import { ProgressBar } from "./ProgressBar";
 import { motion, useAnimation } from 'framer-motion';
+import ProgressBar from './ProgressBar'
 
 
 function Softblock() {
@@ -102,7 +102,7 @@ function Softblock() {
       animate="visible"
       variants={fadeInVariants}
     >
-              <ProgressBar percents={50} caption="Goal Progress"/>
+              <ProgressBar/>
               </motion.div>
             </div>
           ) : (
