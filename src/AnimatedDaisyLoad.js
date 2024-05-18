@@ -187,7 +187,7 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
           c16.132-6.547,33.185-9.863,50.697-9.863c3.616,0,7.264,0.15,10.88,0.449c28.467,2.279,55.468,13.629,77.025,32.19
           C466.662,274.572,439.672,285.922,411.205,288.201z"
           stroke="#000" 
-          stroke-width="2"
+          strokeWidth="2"
           fill="none"
         />
     </motion.svg>
@@ -206,7 +206,7 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
           fontStyle: 'italic',
           fontWeight: 200,
           textAlign: 'center',
-        }}>Take a breather. Focus mode is on</Typography>
+        }}>Take a breather. Focus mode is on!!!</Typography>
         </motion.div>
         </Box>
       )}
