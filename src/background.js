@@ -1,5 +1,5 @@
 chrome.action.onClicked.addListener((tab) => {
-  chrome.tabs.create({ url: "http://localhost:8080/blockedWebsites" });
+  chrome.tabs.create({ url: "http://localhost:8080/schedule" });
 });
 //this is if we click on the tab, navigates us to calendar
 
@@ -9,29 +9,30 @@ let domainNames = [];
 //domain names: don't add same domain twice....
 //check for uniquenes of domain names
 
-chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
-  console.log("Received message:", message);
-  switch (message.type) {
-    case "updateBlocklist":
-      switch (message.action) {
-        case "add":
-          addUrlToLocalBlocklist(message.url, sendResponse);
-          return true; // Keep the message channel open for asynchronous response
-        case "remove":
-          removeUrlFromLocalBlocklist(message.url, sendResponse);
-          return true;
-        case "clear":
-          clearBlocklist();
-          sendResponse({ status: "success" });
-          break;
-        case "fetch":
-          fetchLocalBlocklist(sendResponse);
-          return true;
-      }
-      break;
+chrome.runtime.onMessageExternal.addListener(
+  (message, sender, sendResponse) => {
+    console.log("Received message:", message);
+    switch (message.type) {
+      case "updateBlocklist":
+        switch (message.action) {
+          case "add":
+            addUrlToLocalBlocklist(message.url, sendResponse);
+            return true; // Keep the message channel open for asynchronous response
+          case "remove":
+            removeUrlFromLocalBlocklist(message.url, sendResponse);
+            return true;
+          case "clear":
+            clearBlocklist();
+            sendResponse({ status: "success" });
+            break;
+          case "fetch":
+            fetchLocalBlocklist(sendResponse);
+            return true;
+        }
+        break;
+    }
   }
-});
-
+);
 
 chrome.webRequest.onBeforeRedirect.addListener(
   //onBeforeRedirect
