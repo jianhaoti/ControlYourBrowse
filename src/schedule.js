@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { Calendar } from "@fullcalendar/core";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { CirclePicker } from "react-color";
+// import { CirclePicker } from "react-color";
 
 const Schedule = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -250,9 +250,9 @@ const Schedule = () => {
   };
 
   // Debugging
-  // useEffect(() => {
-  //   console.log(selectedEvent);
-  // }, [selectedEvent]);
+  useEffect(() => {
+    console.log(selectedEvent);
+  }, [selectedEvent]);
 
   const formatTimeForInput = (date) => {
     return date.toLocaleTimeString("en-GB", {
@@ -355,18 +355,18 @@ const Schedule = () => {
             {/* Color */}
             <div style={{ marginTop: "10px" }}>
               <label>Tag: </label>
-              {/* <input
+              <input
                 type="color"
                 value={eventColor}
                 onChange={(e) => handleColorChange(e.target.value)}
                 style={{ marginLeft: "10px" }}
-              /> */}
-              <CirclePicker
+              />
+              {/* <CirclePicker
                 color={eventColor}
                 onChangeComplete={(color) => handleColorChange(color.hex)}
                 width="100%"
                 circleSize={20}
-              />
+              /> */}
             </div>
           </div>
         ) : (

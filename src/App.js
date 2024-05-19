@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client"; // Correct import
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Softblock from "./softblock.js";
 import Schedule from "./schedule.js";
@@ -25,5 +25,6 @@ function App() {
   );
 }
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const container = document.getElementById("root");
+const root = createRoot(container); // Use createRoot from react-dom/client
 root.render(<App />);
