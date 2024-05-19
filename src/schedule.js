@@ -270,6 +270,7 @@ const Schedule = () => {
       if (!eventTitle.startsWith(" ")) {
         selectedEvent.setProp("title", eventTitle.trim());
         selectedEvent.setProp("classNames", []); // Remove the unnamed-event class
+        setSelectedEvents(selectedEvent);
       } else {
         console.error("Can't with a space");
       }
