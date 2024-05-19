@@ -185,6 +185,10 @@ const Schedule = () => {
       });
       updateEventDetails(newEvent);
       setEventColor(defaultColor);
+      //everytime we create event, it adds it to calendar 
+    //its calendar.addevent
+    //updates calendar api
+    //unnamed event classname: makes it opaque
 
       setTimeout(() => {
         if (titleInputRef.current) {
