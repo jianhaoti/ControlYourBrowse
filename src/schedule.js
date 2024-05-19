@@ -143,12 +143,14 @@ const Schedule = () => {
         setEventTitle(info.event.title);
         setStartTime(formatTimeForInput(info.event.start));
         setEndTime(formatTimeForInput(info.event.end));
+        console.log("event drop endtime starttime and id", info.event.start);
       },
       eventResize: (info) => {
         setSelectedEvent(info.event);
         setEventTitle(info.event.title);
         setStartTime(formatTimeForInput(info.event.start));
         setEndTime(formatTimeForInput(info.event.end));
+        console.log("event resize endtime starttime and id", info.event.start);
       },
 
       select: (info) => {
@@ -169,10 +171,13 @@ const Schedule = () => {
           classNames: ["unnamed-event"], // Add a class for styling
         });
         setSelectedEvent(newEvent);
+        console.log("i am setting new event", selectedEvent);
+        //okay, it seems like i am setting the neew event here, but after this step ,it is becoming null 
         setEventTitle(newEvent.title);
         setStartTime(formatTimeForInput(newEvent.start));
         setEndTime(formatTimeForInput(newEvent.end));
         setEventColor(defaultColor);
+        console.log("newevent endtime starttime and id",  newEvent.start);
 
         calendar.unselect();
       },
@@ -183,6 +188,7 @@ const Schedule = () => {
         setStartTime(formatTimeForInput(info.event.start));
         setEndTime(formatTimeForInput(info.event.end));
         setEventColor(info.event.backgroundColor);
+        console.log("eventclick drop endtime starttime and id", info.event.start);
       },
     });
     calendar.render();
@@ -199,7 +205,10 @@ const Schedule = () => {
 
       // reset selected events
       if (!click.target.closest(".fc-event")) {
+        console.log("i am entering the code to set to null");
         setSelectedEvent(null);
+        console.log("i am setting it to null");
+        // okaay...i a not setting it to null
         setEventTitle("");
         setStartTime("");
         setEndTime("");
@@ -218,11 +227,20 @@ const Schedule = () => {
 
   // backspace removes event
   useEffect(() => {
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
+    // Defensive check to ensure selectedEvent and its properties are not null/undefined
+    if (selectedEvent && selectedEvent.start) {
+      document.addEventListener("keydown", handleKeyDown);
+      console.log("Selected event start time:", selectedEvent.start);
+      //okay, i enter here.....and selected evnet start tie does work?
+  
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown);
+      };
+    } else {
+      console.warn("selectedEvent or selectedEvent.start is null/undefined");
+    }
   }, [selectedEvent]);
+  
 
   const handleKeyDown = (keypress) => {
     if (keypress.key === "Backspace" && selectedEvent) {
@@ -230,9 +248,10 @@ const Schedule = () => {
     }
   };
 
-  // Debugging
+
   // useEffect(() => {
-  //   console.log(selectedEvent);
+  //   console.log("logging changes", selectedEvent.end);
+  //   //null here
   // }, [selectedEvent]);
 
   const formatTimeForInput = (date) => {
@@ -259,7 +278,10 @@ const Schedule = () => {
 
   const removeEvent = (event) => {
     event.remove();
+    console.log("i am entering code to set it to null via removeevent");
     setSelectedEvent(null);
+    console.log("i am setting it to null by removing");
+    //nevermind, not happening here
     setEventTitle("");
     setStartTime(null);
     setEndTime(null);
@@ -270,6 +292,7 @@ const Schedule = () => {
     if (selectedEvent) {
       selectedEvent.setProp("backgroundColor", color);
       selectedEvent.setProp("borderColor", color);
+      setSelectedEvent(selectedEvent); //this is the fix....
     }
   };
 
@@ -305,6 +328,8 @@ const Schedule = () => {
         }}
       >
         <h3>Event</h3>
+        {/* usestate: selectedevent becomes non-null when you have an event in focus that you 'selected' */}
+        {/* this is becoming always null for some reason */}
         {selectedEvent ? (
           <div>
             {/* Title */}
@@ -343,6 +368,7 @@ const Schedule = () => {
                 onChange={(e) => handleColorChange(e.target.value)}
                 style={{ marginLeft: "10px" }}
               />
+              {/* */}
             </div>
           </div>
         ) : (
