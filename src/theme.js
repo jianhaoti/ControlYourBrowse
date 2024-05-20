@@ -40,6 +40,12 @@ const theme = createTheme({
       fontWeight: 500,
       lineHeight: 1.35,
     },
+    stylized: {
+      fontFamily: 'Display',
+      fontSize: '48px',
+      fontStyle: 'italic',
+      fontWeight: 200,
+    }
     // Continue with other styles for h4, h5, etc.
   }
 });

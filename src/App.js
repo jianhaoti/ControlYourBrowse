@@ -8,6 +8,8 @@ import theme from "./theme.js";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import BlockedWebsites from "./blockedWebsites.js";
+import './fonts.css';
+
 
 function App() {
   return (

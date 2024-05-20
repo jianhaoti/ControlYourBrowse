@@ -73,7 +73,7 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
       if (onAnimationComplete) {
         onAnimationComplete();
       }
-    }, 7000);
+    }, 9000);
 
     return () => clearTimeout(timer);
   }, [onAnimationComplete]);
@@ -202,7 +202,9 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
       animate="visible"
       variants={fadeInVariants}
     >
-        <Typography sx={{
+        <Typography 
+        sx={{
+          fontFamily: 'Display',
           fontSize: '48px',
           fontStyle: 'italic',
           fontWeight: 200,

@@ -1,0 +1,8 @@
+/* src/fonts.css */
+@font-face {
+    font-family: 'Display';
+    src: url('./assets/PPEditorialNew-UltralightItalic.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
