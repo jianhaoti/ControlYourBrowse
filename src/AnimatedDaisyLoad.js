@@ -43,8 +43,8 @@ const variants = {
   fadeOut: {
     opacity: 0,
     transition: {
-      duration: 4,
-      ease: "easeInOut"
+      duration: 8,
+      ease: "linear"
     }
   }
 };
