@@ -4,7 +4,8 @@ import { useTheme } from '@mui/material/styles';
 import AnimatedDaisyLoad from "./AnimatedDaisyLoad";
 import TypewriterComponent from "typewriter-effect";
 import { motion, useAnimation } from 'framer-motion';
-import ProgressBar from './ProgressBar'
+import ProgressBar from './ProgressBar';
+import PulsatingIcon from "./PulsatingIcon";
 
 
 function Softblock() {
@@ -103,8 +104,10 @@ function Softblock() {
       initial="hidden"
       animate="visible"
       variants={fadeInVariants}
+      
     >
               <ProgressBar/>
+             
               </motion.div>
             </div>
             </div>

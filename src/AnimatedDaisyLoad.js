@@ -2,6 +2,8 @@
 import React, { useEffect, useState } from 'react';
 import { motion, useAnimation } from 'framer-motion';
 import { Box, Typography } from '@mui/material';
+import PulsatingIcon from './PulsatingIcon';
+import PulsatingRewind from './PulsatingRewind';
 
 const totalLength = 2400;
 
@@ -215,7 +217,11 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
           left: '50%',
           //this makes the text relative to the parent container, the box
           transform: 'translate(-50%, -50%)',
-        }}>Take a breather. Focus mode is on. </Typography>
+        }}>Take a breath. Focus mode is on. </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '35rem', gap: '10rem' }}>
+        <PulsatingRewind sx={{position: 'absolute'}}/>
+        <PulsatingIcon sx={{position: 'absolute'}}/>       
+        </Box>
         </motion.div>
         </Box>
       )}

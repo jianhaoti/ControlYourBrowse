@@ -45,6 +45,13 @@ const theme = createTheme({
       fontSize: '48px',
       fontStyle: 'italic',
       fontWeight: 200,
+    },
+    regital: {
+      fontFamily: 'Display Regular',
+      fontSize: '18px',
+      fontStyle: 'italic',
+      fontWeight: 200,
+
     }
     // Continue with other styles for h4, h5, etc.
   }
