@@ -72,7 +72,8 @@ function Softblock() {
         flexDirection: 'column', 
         justifyContent: 'center', 
         alignItems: 'center', 
-        backgroundColor: theme.palette.background.default 
+        backgroundColor: theme.palette.background.default,
+        position: 'relative'
       }}
     >
       {/* <Typography variant="h4">Redoing Page</Typography> */}
@@ -80,6 +81,7 @@ function Softblock() {
       {animationComplete && (
         <>
           {interceptedUrl ? (
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', marginTop: '16rem' }}>
             <div style={typewriterStyle}>
               <TypewriterComponent
                 options={{
@@ -105,12 +107,15 @@ function Softblock() {
               <ProgressBar/>
               </motion.div>
             </div>
+            </div>
           ) : (
             <Typography>No URL intercepted or already cleared.</Typography>
           )}
+          
         </>
       )}
     </Box>
+    
   );
 }
 

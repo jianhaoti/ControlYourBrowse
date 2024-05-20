@@ -14,20 +14,21 @@ const variants = {
     strokeDasharray: `${totalLength} ${totalLength}`,  // Keeps the dash array constant
     strokeDashoffset: 0,                          // Animates offset to 0 to reveal the path
     transition: {
+      // duration: 6,
       duration: 6,
       ease: "linear"
     }
   },
-  jitter: {
-    x: [0, -5,5, -5, 2, 0], // Horizontal jitter effect
-    y: [0, -5,5, -5, 2, 0], // Vertical jitter effect
-    opacity: [1,0.8,1,0.7,1,1,0.8,0.9, 0.7, 1],
-    transition: {
-      duration: 1.2,
-      ease: "linear",
-      times: [0, 0.25, 0.49, 0.6, 0.8, 1],
-    }
-  },
+  // jitter: {
+  //   x: [0, -5,5, -5, 2, 0], // Horizontal jitter effect
+  //   y: [0, -5,5, -5, 2, 0], // Vertical jitter effect
+  //   opacity: [1,0.8,1,0.7,1,1,0.8,0.9, 0.7, 1],
+  //   transition: {
+  //     duration: 1.2,
+  //     ease: "linear",
+  //     times: [0, 0.25, 0.49, 0.6, 0.8, 1],
+  //   }
+  // },
   zoomOut: {
     scale: [1,0.5],
     // originX: "40%",
@@ -190,7 +191,7 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
           strokeWidth="2"
           fill="none"
         />
-    </motion.svg>
+    </motion.svg> 
     </motion.div>
       ): (
         <Box sx={{height: '520px', width: '520px',
@@ -206,7 +207,13 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
           fontStyle: 'italic',
           fontWeight: 200,
           textAlign: 'center',
-        }}>Take a breather. Focus mode is on!!!</Typography>
+          position: "absolute",
+          width: "25rem",
+          top: '30%',
+          left: '50%',
+          //this makes the text relative to the parent container, the box
+          transform: 'translate(-50%, -50%)',
+        }}>Take a breather. Focus mode is on. </Typography>
         </motion.div>
         </Box>
       )}
