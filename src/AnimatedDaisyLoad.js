@@ -43,8 +43,8 @@ const variants = {
   fadeOut: {
     opacity: 0,
     transition: {
-      duration: 8,
-      ease: "linear"
+      duration: 5,
+      ease: "easeInOut"
     }
   }
 };
@@ -73,7 +73,7 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
       if (onAnimationComplete) {
         onAnimationComplete();
       }
-    }, 9000);
+    }, 11000);
 
     return () => clearTimeout(timer);
   }, [onAnimationComplete]);
