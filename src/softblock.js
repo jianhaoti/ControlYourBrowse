@@ -6,6 +6,7 @@ import TypewriterComponent from "typewriter-effect";
 import { motion, useAnimation } from 'framer-motion';
 import ProgressBar from './ProgressBar';
 import PulsatingIcon from "./PulsatingIcon";
+import PulsatingRewind from "./PulsatingRewind";
 
 
 function Softblock() {
