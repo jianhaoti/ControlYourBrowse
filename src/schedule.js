@@ -43,13 +43,13 @@ const Schedule = () => {
 
       /* Title bar */
       .fc-toolbar-title {
-        content: "My Week";
+        content: "My Weekly";
         visibility: hidden;
         position: relative;
       }
 
       .fc-toolbar-title::after {
-        content: "My Week";
+        content: "My Weekly";
         visibility: visible;
         position: absolute;
         left: 0;
