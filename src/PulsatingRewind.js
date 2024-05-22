@@ -16,8 +16,6 @@ const pulsateVariants = {
     transition: {
       duration: 0.6,
       ease: 'easeInOut',
-      repeat: Infinity, // Repeat the animation
-      repeatType: 'loop' // Loop the animation
     }
   }
 };
