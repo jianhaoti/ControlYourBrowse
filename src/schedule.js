@@ -44,13 +44,13 @@ const Schedule = () => {
 
       /* Title bar */
       .fc-toolbar-title {
-        content: "My Weekly";
+        content: "My Week";
         visibility: hidden;
         position: relative;
       }
 
       .fc-toolbar-title::after {
-        content: "My Weekly";
+        content: "My Week";
         visibility: visible;
         position: absolute;
         left: 0;
@@ -135,18 +135,10 @@ const Schedule = () => {
       },
       selectable: true, // Enable selection
 
-      //! granular control when an event is allowed to resize
-      eventDidMount: function (info) {
-        if (eventHasTitle(info.event)) {
-          info.event.setProp("editable", true);
-          info.event.setProp("durationEditable", true);
-          info.event.setProp("eventResizableFromStart", true);
-        } else {
-          info.event.setProp("editable", false);
-          info.event.setProp("durationEditable", false);
-          info.event.setProp("eventResizableFromStart", false);
-        }
-      },
+      // event not editable before titled
+      editable: false,
+      eventDurationEditable: false,
+      eventResizeStart: false,
 
       // Event listeners to update time automatically
       eventDrop: (info) => {
@@ -176,19 +168,21 @@ const Schedule = () => {
           title: "",
           start: info.start,
           end: info.end,
-          allDay: info.allDay,
           backgroundColor: defaultColor,
           borderColor: defaultColor,
           classNames: ["unnamed-event"], // Add a class for styling
         });
         setSelectedEvent(newEvent);
-        console.log("i am setting new event", selectedEvent);
         //okay, it seems like i am setting the neew event here, but after this step ,it is becoming null
         setEventTitle(newEvent.title);
         setStartTime(formatTimeForInput(newEvent.start));
         setEndTime(formatTimeForInput(newEvent.end));
         setEventColor(defaultColor);
-        console.log("newevent endtime starttime and id", newEvent.start);
+
+        // Automatically focus the title input field
+        setTimeout(() => {
+          titleInputRef.current && titleInputRef.current.focus();
+        }, 0);
 
         calendar.unselect();
       },
