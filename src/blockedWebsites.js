@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const extensionId = "cdchajanpogdhbenhgfjfjcbnpfpafmj";
+const extensionId = "gmpdhjhofpdgofmlocjhdcbbobjddpmm";
 
 function BlockedWebsites() {
   const [blocklist, setBlocklist] = useState([]);
@@ -22,7 +22,6 @@ function BlockedWebsites() {
       }
     );
   }, []);
-  
 
   const isValidUrl = (urlString) => {
     try {
@@ -35,7 +34,7 @@ function BlockedWebsites() {
 
   const handleAdd = () => {
     console.log("add button clicked"); // i am indeed clicking the add button
-     if (newUrl.trim() && isValidUrl(newUrl.trim())) {
+    if (newUrl.trim() && isValidUrl(newUrl.trim())) {
       chrome.runtime.sendMessage(
         extensionId,
         { type: "updateBlocklist", action: "add", url: newUrl.trim() },

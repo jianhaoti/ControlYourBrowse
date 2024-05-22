@@ -10,6 +10,7 @@ const Schedule = () => {
   const [endTime, setEndTime] = useState("");
   const defaultColor = "#7B3D3D";
   const [eventColor, setEventColor] = useState(defaultColor);
+  const titleInputRef = useRef(null);
 
   // This useEffect mimics domLoaded
   useEffect(() => {
@@ -43,13 +44,13 @@ const Schedule = () => {
 
       /* Title bar */
       .fc-toolbar-title {
-        content: "My Weekly";
+        content: "My Week";
         visibility: hidden;
         position: relative;
       }
 
       .fc-toolbar-title::after {
-        content: "My Weekly";
+        content: "My Week";
         visibility: visible;
         position: absolute;
         left: 0;
@@ -125,7 +126,6 @@ const Schedule = () => {
       slotDuration: "00:15:00", // 15-minute increments
       slotLabelInterval: "01:00:00", // Label every 1 hr
       editable: true,
-      droppable: true,
       allDaySlot: false,
       dayHeaderFormat: { weekday: "long" },
       initialView: "timeGridWeek",
@@ -133,9 +133,12 @@ const Schedule = () => {
       windowResize: () => {
         calendar.updateSize(); // Update calendar size on window resize
       },
-      eventResizableFromStart: true, // Allow resizing from start
-      eventDurationEditable: true, // Allow event duration editing
       selectable: true, // Enable selection
+
+      // event not editable before titled
+      editable: false,
+      eventDurationEditable: false,
+      eventResizeStart: false,
 
       // Event listeners to update time automatically
       eventDrop: (info) => {
@@ -165,19 +168,21 @@ const Schedule = () => {
           title: "",
           start: info.start,
           end: info.end,
-          allDay: info.allDay,
           backgroundColor: defaultColor,
           borderColor: defaultColor,
           classNames: ["unnamed-event"], // Add a class for styling
         });
         setSelectedEvent(newEvent);
-        console.log("i am setting new event", selectedEvent);
-        //okay, it seems like i am setting the neew event here, but after this step ,it is becoming null 
+        //okay, it seems like i am setting the neew event here, but after this step ,it is becoming null
         setEventTitle(newEvent.title);
         setStartTime(formatTimeForInput(newEvent.start));
         setEndTime(formatTimeForInput(newEvent.end));
         setEventColor(defaultColor);
-        console.log("newevent endtime starttime and id",  newEvent.start);
+
+        // Automatically focus the title input field
+        setTimeout(() => {
+          titleInputRef.current && titleInputRef.current.focus();
+        }, 0);
 
         calendar.unselect();
       },
@@ -188,13 +193,16 @@ const Schedule = () => {
         setStartTime(formatTimeForInput(info.event.start));
         setEndTime(formatTimeForInput(info.event.end));
         setEventColor(info.event.backgroundColor);
-        console.log("eventclick drop endtime starttime and id", info.event.start);
+        console.log(
+          "eventclick drop endtime starttime and id",
+          info.event.start
+        );
       },
     });
     calendar.render();
 
     // calender background click logic
-    const handleCalendarClick = (click) => {
+    const handleCalendarMouseDown = (mouseDown) => {
       // removes untitled events
       calendar.getEvents().forEach((event) => {
         console.log(event.title);
@@ -204,21 +212,18 @@ const Schedule = () => {
       });
 
       // reset selected events
-      if (!click.target.closest(".fc-event")) {
-        console.log("i am entering the code to set to null");
+      if (!mouseDown.target.closest(".fc-event")) {
         setSelectedEvent(null);
-        console.log("i am setting it to null");
-        // okaay...i a not setting it to null
         setEventTitle("");
         setStartTime("");
         setEndTime("");
       }
     };
 
-    calendarElement.addEventListener("click", handleCalendarClick);
+    calendarElement.addEventListener("mousedown", handleCalendarMouseDown);
     // Cleanup
     return () => {
-      calendarElement.removeEventListener("click", handleCalendarClick);
+      calendarElement.removeEventListener("mousedown", handleCalendarMouseDown);
 
       document.head.removeChild(calendarTitle);
       calendar.destroy();
@@ -227,32 +232,25 @@ const Schedule = () => {
 
   // backspace removes event
   useEffect(() => {
-    // Defensive check to ensure selectedEvent and its properties are not null/undefined
-    if (selectedEvent && selectedEvent.start) {
-      document.addEventListener("keydown", handleKeyDown);
-      console.log("Selected event start time:", selectedEvent.start);
-      //okay, i enter here.....and selected evnet start tie does work?
-  
-      return () => {
-        document.removeEventListener("keydown", handleKeyDown);
-      };
-    } else {
-      console.warn("selectedEvent or selectedEvent.start is null/undefined");
-    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [selectedEvent]);
-  
+
+  const eventHasTitle = (event) => {
+    return event.title && event.title.trim() !== "";
+  };
 
   const handleKeyDown = (keypress) => {
-    if (keypress.key === "Backspace" && selectedEvent) {
+    if (
+      keypress.key === "Backspace" &&
+      selectedEvent &&
+      !titleInputRef.current?.contains(document.activeElement) // avoid deleting event, if editing title
+    ) {
       removeEvent(selectedEvent);
     }
   };
-
-
-  // useEffect(() => {
-  //   console.log("logging changes", selectedEvent.end);
-  //   //null here
-  // }, [selectedEvent]);
 
   const formatTimeForInput = (date) => {
     return date.toLocaleTimeString("en-GB", {
@@ -270,10 +268,23 @@ const Schedule = () => {
       if (!eventTitle.startsWith(" ")) {
         selectedEvent.setProp("title", eventTitle.trim());
         selectedEvent.setProp("classNames", []); // Remove the unnamed-event class
-        setSelectedEvents(selectedEvent);
-      } else {
-        console.error("Can't with a space");
+
+        // Manually trigger a re-render of the event to apply the eventDidMount logic again
+        selectedEvent.setProp("editable", eventHasTitle(selectedEvent));
+        selectedEvent.setProp("durationEditable", eventHasTitle(selectedEvent));
+        selectedEvent.setProp(
+          "eventResizableFromStart",
+          eventHasTitle(selectedEvent)
+        );
       }
+      setSelectedEvent(selectedEvent);
+      titleInputRef.current.blur(); // Unfocus the input
+    }
+  };
+
+  const handleTitleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.target.blur();
     }
   };
 
@@ -337,6 +348,7 @@ const Schedule = () => {
             <input
               type="text"
               value={eventTitle}
+              ref={titleInputRef}
               onChange={handleTitleChange}
               onBlur={handleTitleBlur}
               onKeyDown={(e) => {
@@ -369,7 +381,6 @@ const Schedule = () => {
                 onChange={(e) => handleColorChange(e.target.value)}
                 style={{ marginLeft: "10px" }}
               />
-              {/* */}
             </div>
           </div>
         ) : (
