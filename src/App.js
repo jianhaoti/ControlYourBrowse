@@ -8,6 +8,7 @@ import theme from "./theme.js";
 import { ThemeProvider } from "@mui/material/styles";
 import { CssBaseline } from "@mui/material";
 import BlockedWebsites from "./blockedWebsites.js";
+import  Dashboard from './Dashboard.js';
 import './fonts.css';
 
 
@@ -21,6 +22,7 @@ function App() {
           <Route path="/schedule" element={<Schedule />} />
           <Route path="/blockedWebsites" element={<BlockedWebsites />} />
           <Route path="/debug" element={<Debug />} />
+          <Route path="/dashboard" element={<Dashboard/>} />
         </Routes>
       </Router>
     </ThemeProvider>
