@@ -14,7 +14,7 @@ const pulsateVariants = {
   hover: {
     scale: [1, 1.2, 1], // Scale up and then back down
     transition: {
-      duration: 0.6,
+      duration: 1,
       ease: 'easeInOut',
     }
   }

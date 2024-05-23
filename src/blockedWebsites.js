@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const extensionId = "gmpdhjhofpdgofmlocjhdcbbobjddpmm";
+const extensionId = "cdchajanpogdhbenhgfjfjcbnpfpafmj";
 
 function BlockedWebsites() {
   const [blocklist, setBlocklist] = useState([]);
