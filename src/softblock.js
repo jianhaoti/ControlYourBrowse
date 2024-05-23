@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Typography, Box } from "@mui/material";
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from "@mui/material/styles";
 import AnimatedDaisyLoad from "./AnimatedDaisyLoad";
 import TypewriterComponent from "typewriter-effect";
-import { motion } from 'framer-motion';
-import ProgressBar from './ProgressBar';
+import { motion } from "framer-motion";
+import ProgressBar from "./ProgressBar";
 
 function Softblock() {
   const [interceptedUrl, setInterceptedUrl] = useState("");
@@ -22,32 +22,36 @@ function Softblock() {
 
   const fadeInVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: [0, 1],
       transition: {
         duration: 3.7,
-        ease: "easeInOut"
-      }
-    }
+        ease: "easeInOut",
+      },
+    },
   };
 
   useEffect(() => {
-    const extensionId = "cdchajanpogdhbenhgfjfjcbnpfpafmj"; // Replace with your actual extension ID
+    const extensionId = "gmpdhjhofpdgofmlocjhdcbbobjddpmm"; // Replace with your actual extension ID
     // Check if the Chrome APIs are available
     if (chrome && chrome.runtime && chrome.runtime.sendMessage) {
-      chrome.runtime.sendMessage(extensionId, { message: "getInterceptedUrl" }, response => {
-        if (response) {
-          if (response.error) {
-            console.error("Error retrieving URL:", response.error);
-            return;
+      chrome.runtime.sendMessage(
+        extensionId,
+        { message: "getInterceptedUrl" },
+        (response) => {
+          if (response) {
+            if (response.error) {
+              console.error("Error retrieving URL:", response.error);
+              return;
+            }
+            // Extract the base URL
+            const url = new URL(response.url);
+            setInterceptedUrl(url.hostname);
+          } else {
+            console.error("Chrome Extension did not respond.");
           }
-          // Extract the base URL
-          const url = new URL(response.url);
-          setInterceptedUrl(url.hostname);
-        } else {
-          console.error("Chrome Extension did not respond.");
         }
-      });
+      );
     } else {
       console.error("Chrome API is not available");
     }
@@ -58,35 +62,45 @@ function Softblock() {
   };
 
   return (
-    <Box 
-      sx={{ 
-        height: '100vh', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+    <Box
+      sx={{
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
         backgroundColor: theme.palette.background.default,
-        position: 'relative'
+        position: "relative",
       }}
     >
       <AnimatedDaisyLoad onAnimationComplete={handleAnimationComplete} />
       {animationComplete && (
         <>
           {interceptedUrl ? (
-            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center', marginTop: '16rem' }}>
+            <div
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                textAlign: "center",
+                marginTop: "16rem",
+              }}
+            >
               <div style={typewriterStyle}>
                 <TypewriterComponent
                   options={{
                     delay: 50,
                   }}
                   onInit={(typewriter) => {
-                    typewriter.typeString(`The Intercepted URL: ${interceptedUrl}`)
+                    typewriter
+                      .typeString(`The Intercepted URL: ${interceptedUrl}`)
                       .callFunction(() => {
-                        console.log('String typed out!');
+                        console.log("String typed out!");
                       })
                       .pauseFor(2500)
                       .callFunction(() => {
-                        console.log('All strings were deleted');
+                        console.log("All strings were deleted");
                       })
                       .start();
                   }}
@@ -110,4 +124,3 @@ function Softblock() {
 }
 
 export default Softblock;
-

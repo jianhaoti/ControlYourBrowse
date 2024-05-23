@@ -18,17 +18,12 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./src/app.html",
       filename: "App.html",
-      chunks: ["app"], // Ensure the chunk name matches the entry name
-    }),
-    new HtmlWebpackPlugin({
-      template: "./src/softblock.html",
-      filename: "softblock.html",
-      chunks: ["softblock"],
+      chunks: ["app"],
     }),
     new CopyPlugin({
       patterns: [
         { from: "src/manifest.json", to: "manifest.json" },
-        { from: "src/assets", to: "assets" }, // Copy assets folder
+        { from: "src/assets", to: "assets" },
       ],
     }),
     new MiniCssExtractPlugin({
@@ -49,7 +44,7 @@ module.exports = {
       },
       {
         test: /\.svg$/,
-        use: ['@svgr/webpack'],
+        use: ["@svgr/webpack"],
       },
       {
         test: /\.css$/,

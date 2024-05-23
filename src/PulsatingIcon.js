@@ -1,23 +1,23 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import FastForwardOutlinedIcon from '@mui/icons-material/FastForwardOutlined';
-import { Typography } from '@mui/material';
+import React from "react";
+import { motion } from "framer-motion";
+import FastForwardOutlinedIcon from "@mui/icons-material/FastForwardOutlined";
+import { Typography } from "@mui/material";
 
 const pulsateVariants = {
   rest: {
     scale: 1,
     transition: {
       duration: 0.3,
-      ease: 'easeInOut'
-    }
+      ease: "easeInOut",
+    },
   },
   hover: {
     scale: [1, 1.2, 1], // Scale up and then back down
     transition: {
       duration: 1,
-      ease: 'easeInOut',
-    }
-  }
+      ease: "easeInOut",
+    },
+  },
 };
 
 const PulsatingIcon = () => {
@@ -27,14 +27,19 @@ const PulsatingIcon = () => {
       initial="rest"
       whileHover="hover"
       animate="rest"
-      style={{ display: 'inline-block' }} // Adjust size as needed
+      style={{ display: "inline-block", cursor: "pointer" }} // Adjust size as needed
     >
-      <FastForwardOutlinedIcon style={{ fontSize: 100,
-        fill: 'transparent',
-        stroke: 'currentColor',
-        strokeWidth: 0.33,
-      }} />
-      <Typography sx={{fontFamily: 'Display Regular'}}>bypass block</Typography>
+      <FastForwardOutlinedIcon
+        style={{
+          fontSize: 100,
+          fill: "transparent",
+          stroke: "currentColor",
+          strokeWidth: 0.33,
+        }}
+      />
+      <Typography sx={{ fontFamily: "Display Regular" }}>
+        bypass block
+      </Typography>
     </motion.div>
   );
 };

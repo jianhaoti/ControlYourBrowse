@@ -40,10 +40,10 @@ const BarContainer = styled.div`
 `;
 
 const BarWrapper = styled.div`
-  width: 200px;  // Static width for the wrapper
+  width: 200px; // Static width for the wrapper
   height: 10px;
   border-radius: 5px;
-  background-color: #e9e7e2;  // Background for the empty part of the bar
+  background-color: #e9e7e2; // Background for the empty part of the bar
   overflow: hidden;
   position: relative;
 `;
@@ -51,7 +51,7 @@ const BarWrapper = styled.div`
 const Bar = styled.div`
   height: 100%;
   border-radius: 5px;
-  background-color: #0063C6;
+  background-color: #0063c6;
   width: 0; // Initial width
   ${({ percent }) => css`
     width: ${percent}%;
