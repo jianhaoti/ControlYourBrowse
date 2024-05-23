@@ -49,7 +49,7 @@ const variants = {
   },
 };
 
-const AnimatedDaisyLoad = ({ onAnimationComplete }) => {
+const AnimatedDaisyLoad = ({ onAnimationComplete, interceptedUrl }) => {
   const controls = useAnimation();
 
   const [displayText, setDisplayText] = useState(false);
@@ -226,10 +226,27 @@ const AnimatedDaisyLoad = ({ onAnimationComplete }) => {
                 alignItems: "center",
                 marginTop: "35rem",
                 gap: "10rem",
+                position: "relative",
               }}
             >
-              <PulsatingRewind sx={{ position: "absolute" }} />
-              <PulsatingForward sx={{ position: "absolute" }} />
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  window.history.back();
+                }}
+              >
+                <PulsatingRewind />
+              </div>
+              <div
+                style={{ cursor: "pointer" }}
+                onClick={() => {
+                  if (interceptedUrl) {
+                    window.location.href = `http://google.com`;
+                  }
+                }}
+              >
+                <PulsatingForward />
+              </div>
             </Box>
           </motion.div>
         </Box>

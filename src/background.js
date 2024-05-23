@@ -6,8 +6,22 @@ chrome.action.onClicked.addListener((tab) => {
 let localBlocklist = [];
 //blocklist stored locally
 let domainNames = [];
-//domain names: don't add same domain twice....
-//check for uniquenes of domain names
+
+// this is external messaging, a technique to get chrome api to connect with external webpage
+chrome.runtime.onMessageExternal.addListener(function (
+  request,
+  sender,
+  sendResponse
+) {
+  if (sender.url === "http://localhost:8080/softblock") {
+    if (request.message === "getInterceptedUrl") {
+      chrome.storage.local.get("interceptedURL", function (data) {
+        sendResponse({ url: data.interceptedURL });
+      });
+      return true; // Indicates asynchronous response
+    }
+  }
+});
 
 chrome.runtime.onMessageExternal.addListener(
   (message, sender, sendResponse) => {
@@ -34,12 +48,8 @@ chrome.runtime.onMessageExternal.addListener(
   }
 );
 
+// captures intercepted url and previous url to send to softblock page
 chrome.webRequest.onBeforeRedirect.addListener(
-  //onBeforeRedirect
-  //flow of info:
-  //first navigate to site you softblock, then navigate away....before you navigate away, onBeforeRedirecgt....
-  //this allows us to pack in logic before the navigation away
-
   function (details) {
     const urlObj = new URL(details.url);
     const baseDomain = getBaseDomain(urlObj);
@@ -203,23 +213,6 @@ function addDynamicRule(url) {
     addRules: [allowMusic],
   });
 }
-
-chrome.runtime.onMessageExternal.addListener(function (
-  request,
-  sender,
-  sendResponse
-) {
-  if (sender.url === "http://localhost:8080/softblock") {
-    if (request.message === "getInterceptedUrl") {
-      chrome.storage.local.get("interceptedURL", function (data) {
-        sendResponse({ url: data.interceptedURL });
-      });
-      return true; // Indicates asynchronous response
-    }
-  }
-});
-
-//this is external messaging, a technique to get chrome api to connect with external webpage
 
 // Function to remove a dynamic rule
 function removeDynamicRule(url) {

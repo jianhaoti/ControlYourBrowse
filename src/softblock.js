@@ -73,7 +73,10 @@ function Softblock() {
         position: "relative",
       }}
     >
-      <AnimatedDaisyLoad onAnimationComplete={handleAnimationComplete} />
+      <AnimatedDaisyLoad
+        interceptedUrl={interceptedUrl}
+        onAnimationComplete={handleAnimationComplete}
+      />
       {animationComplete && (
         <>
           {interceptedUrl ? (
