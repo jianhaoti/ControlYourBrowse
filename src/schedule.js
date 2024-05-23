@@ -265,7 +265,7 @@ const Schedule = () => {
 
   const handleTitleBlur = () => {
     if (selectedEvent) {
-      if (!eventTitle.startsWith(" ")) {
+      if (!eventTitle.startsWith(" ") && eventTitle !== "") {
         selectedEvent.setProp("title", eventTitle.trim());
         selectedEvent.setProp("classNames", []); // Remove the unnamed-event class
 
@@ -279,12 +279,6 @@ const Schedule = () => {
       }
       setSelectedEvent(selectedEvent);
       titleInputRef.current.blur(); // Unfocus the input
-    }
-  };
-
-  const handleTitleKeyDown = (e) => {
-    if (e.key === "Enter") {
-      e.target.blur();
     }
   };
 
