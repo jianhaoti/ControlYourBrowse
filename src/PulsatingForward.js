@@ -23,7 +23,7 @@ const pulsateVariants = {
   },
 };
 
-const PulsatingIcon = () => {
+const PulsatingForward = () => {
   return (
     <div>
       <motion.div
@@ -49,4 +49,4 @@ const PulsatingIcon = () => {
   );
 };
 
-export default PulsatingIcon;
+export default PulsatingForward;

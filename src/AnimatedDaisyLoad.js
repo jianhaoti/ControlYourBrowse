@@ -1,25 +1,24 @@
-
-import React, { useEffect, useState } from 'react';
-import { motion, useAnimation } from 'framer-motion';
-import { Box, Typography } from '@mui/material';
-import PulsatingIcon from './PulsatingIcon';
-import PulsatingRewind from './PulsatingRewind';
+import React, { useEffect, useState } from "react";
+import { motion, useAnimation } from "framer-motion";
+import { Box, Typography } from "@mui/material";
+import PulsatingForward from "./PulsatingForward";
+import PulsatingRewind from "./PulsatingRewind";
 
 const totalLength = 2400;
 
 const variants = {
   hidden: {
-    strokeDasharray: `${totalLength} ${totalLength}`,  // Total path length is hidden initially
-    strokeDashoffset: totalLength,                 // Offset is also the total path length
+    strokeDasharray: `${totalLength} ${totalLength}`, // Total path length is hidden initially
+    strokeDashoffset: totalLength, // Offset is also the total path length
   },
   visible: {
-    strokeDasharray: `${totalLength} ${totalLength}`,  // Keeps the dash array constant
-    strokeDashoffset: 0,                          // Animates offset to 0 to reveal the path
+    strokeDasharray: `${totalLength} ${totalLength}`, // Keeps the dash array constant
+    strokeDashoffset: 0, // Animates offset to 0 to reveal the path
     transition: {
       // duration: 6,
       duration: 6,
-      ease: "linear"
-    }
+      ease: "linear",
+    },
   },
   // jitter: {
   //   x: [0, -5,5, -5, 2, 0], // Horizontal jitter effect
@@ -32,32 +31,29 @@ const variants = {
   //   }
   // },
   zoomOut: {
-    scale: [1,0.5],
+    scale: [1, 0.5],
     // originX: "40%",
     // originY: "50%",
-    //so it doesnt move when we transition to this 
+    //so it doesnt move when we transition to this
     transition: {
       duration: 3,
-      ease: "linear"
-
-    }
+      ease: "linear",
+    },
   },
   fadeOut: {
     opacity: 0,
     transition: {
       duration: 5,
-      ease: "easeInOut"
-    }
-  }
+      ease: "easeInOut",
+    },
+  },
 };
 
-
-const AnimatedDaisyLoad = ({onAnimationComplete}) => {
+const AnimatedDaisyLoad = ({ onAnimationComplete }) => {
   const controls = useAnimation();
-  
-  
+
   const [displayText, setDisplayText] = useState(false);
-  
+
   useEffect(() => {
     const sequence = async () => {
       await controls.start("visible");
@@ -79,7 +75,7 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
 
     return () => clearTimeout(timer);
   }, [onAnimationComplete]);
-  //this sets onAnimationComplete to true after timer completes 
+  //this sets onAnimationComplete to true after timer completes
   //why is this in the dependency array?
 
   useEffect(() => {
@@ -95,33 +91,29 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
 
   const fadeInVariants = {
     hidden: { opacity: 0 },
-    visible: { 
-      opacity: [0,1],
+    visible: {
+      opacity: [0, 1],
       transition: {
         duration: 3.7,
-        ease: "easeInOut"
-      }
-    }
+        ease: "easeInOut",
+      },
+    },
   };
 
   return (
     <div>
-      { !displayText ? ( 
-    <motion.div
-      initial="hidden"
-      animate={controls}
-      variants={variants}
-    >
-      <motion.svg
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        width="520px"
-        height="520px"
-        viewBox="0 0 512 512"
-        style ={{transformOrigin: 'center'}} //to prevent ifrom nudging up between tranasitions 
-      >
-        <path
-          d="M509.176,249.196c-20.497-20.508-46.3-34.693-74.232-41.144c20.978-19.545,36.223-44.749,43.722-72.746
+      {!displayText ? (
+        <motion.div initial="hidden" animate={controls} variants={variants}>
+          <motion.svg
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="520px"
+            height="520px"
+            viewBox="0 0 512 512"
+            style={{ transformOrigin: "center" }} //to prevent ifrom nudging up between tranasitions
+          >
+            <path
+              d="M509.176,249.196c-20.497-20.508-46.3-34.693-74.232-41.144c20.978-19.545,36.223-44.749,43.722-72.746
           c0.663-2.471,0.321-5.092-0.963-7.307c-1.273-2.214-3.38-3.83-5.841-4.482c-28.007-7.499-57.437-6.9-84.856,1.487
           c8.376-27.44,8.986-56.881,1.476-84.866c-0.653-2.471-2.268-4.568-4.482-5.852c-2.214-1.273-4.846-1.615-7.307-0.952
           c-27.986,7.499-53.179,22.744-72.735,43.712c-1.829-7.938-4.268-15.726-7.339-23.3c-7.735-19.096-19.106-36.223-33.816-50.922
@@ -189,40 +181,57 @@ const AnimatedDaisyLoad = ({onAnimationComplete}) => {
           c0.011-0.011,0.032-0.021,0.043-0.032c0.032-0.021,0.053-0.043,0.086-0.053c8.077-5.606,16.796-10.313,25.91-14.014
           c16.132-6.547,33.185-9.863,50.697-9.863c3.616,0,7.264,0.15,10.88,0.449c28.467,2.279,55.468,13.629,77.025,32.19
           C466.662,274.572,439.672,285.922,411.205,288.201z"
-          stroke="#000" 
-          strokeWidth="2"
-          fill="none"
-        />
-    </motion.svg> 
-    </motion.div>
-      ): (
-        <Box sx={{height: '520px', width: '520px',
-        justifyContent: 'center', alignItems: 'center', marginTop: '4rem'
-        }} >
-         <motion.div
-      initial="hidden"
-      animate="visible"
-      variants={fadeInVariants}
-    >
-        <Typography 
-        sx={{
-          fontFamily: 'Display',
-          fontSize: '48px',
-          fontStyle: 'italic',
-          fontWeight: 200,
-          textAlign: 'center',
-          position: "absolute",
-          width: "25rem",
-          top: '30%',
-          left: '50%',
-          //this makes the text relative to the parent container, the box
-          transform: 'translate(-50%, -50%)',
-        }}>Take a breath. Focus mode is on. </Typography>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '35rem', gap: '10rem' }}>
-        <PulsatingRewind sx={{position: 'absolute'}}/>
-        <PulsatingIcon sx={{position: 'absolute'}}/>       
-        </Box>
+              stroke="#000"
+              strokeWidth="2"
+              fill="none"
+            />
+          </motion.svg>
         </motion.div>
+      ) : (
+        <Box
+          sx={{
+            height: "520px",
+            width: "520px",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "4rem",
+          }}
+        >
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeInVariants}
+          >
+            <Typography
+              sx={{
+                fontFamily: "Display",
+                fontSize: "48px",
+                fontStyle: "italic",
+                fontWeight: 200,
+                textAlign: "center",
+                position: "absolute",
+                width: "25rem",
+                top: "30%",
+                left: "50%",
+                //this makes the text relative to the parent container, the box
+                transform: "translate(-50%, -50%)",
+              }}
+            >
+              Take a breath. Focus mode is on.{" "}
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: "35rem",
+                gap: "10rem",
+              }}
+            >
+              <PulsatingRewind sx={{ position: "absolute" }} />
+              <PulsatingForward sx={{ position: "absolute" }} />
+            </Box>
+          </motion.div>
         </Box>
       )}
     </div>
