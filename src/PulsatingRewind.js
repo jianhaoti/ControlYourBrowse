@@ -4,13 +4,16 @@ import FastRewindOutlinedIcon from "@mui/icons-material/FastRewindOutlined";
 import { Typography } from "@mui/material";
 
 const pulsateVariants = {
+  // pointer leaves
   rest: {
     scale: 1,
     transition: {
-      duration: 0.3,
+      duration: 0.6,
       ease: "easeInOut",
     },
   },
+
+  // pointer enters
   hover: {
     scale: [1, 1.2, 1], // Scale up and then back down
     transition: {
@@ -22,24 +25,27 @@ const pulsateVariants = {
 
 const PulsatingRewind = () => {
   return (
-    <motion.div
-      variants={pulsateVariants}
-      initial="rest"
-      whileHover="hover"
-      style={{ display: "inline-block" }} // Adjust size as needed
-    >
-      <FastRewindOutlinedIcon
-        style={{
-          fontSize: 100,
-          fill: "transparent",
-          stroke: "currentColor",
-          strokeWidth: 0.33,
-        }}
-      />
-      <Typography sx={{ fontFamily: "Display Regular", cursor: "pointer" }}>
+    <div>
+      <motion.div
+        variants={pulsateVariants}
+        initial="rest"
+        whileHover="hover"
+        animate="rest"
+        style={{ display: "inline-block", cursor: "pointer" }}
+      >
+        <FastRewindOutlinedIcon
+          style={{
+            fontSize: 100,
+            fill: "transparent",
+            stroke: "currentColor",
+            strokeWidth: 0.33,
+          }}
+        />
+      </motion.div>
+      <Typography sx={{ fontFamily: "Display Regular" }}>
         back to work
       </Typography>
-    </motion.div>
+    </div>
   );
 };
 
