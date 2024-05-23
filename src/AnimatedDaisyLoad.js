@@ -241,7 +241,7 @@ const AnimatedDaisyLoad = ({ onAnimationComplete, interceptedUrl }) => {
                 style={{ cursor: "pointer" }}
                 onClick={() => {
                   if (interceptedUrl) {
-                    window.location.href = `http://google.com`;
+                    window.location.href = `https://fauux.neocities.org/statue/statue11`;
                   }
                 }}
               >

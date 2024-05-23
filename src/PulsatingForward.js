@@ -43,7 +43,7 @@ const PulsatingForward = () => {
         />
       </motion.div>
       <Typography sx={{ fontFamily: "Display Regular" }}>
-        bypass block
+        time to relax
       </Typography>
     </div>
   );
