@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import BarChartBox from "./BarChartBox";
 import { useTheme } from "@emotion/react";
 import { Typography } from "@mui/material";
-import DraggableGoals from "./DraggableGoals";
+import ButtonBar from "./ButtonBar";
 
 const Dashboard = () => {
 
@@ -14,7 +14,7 @@ const theme = useTheme();
        <Typography 
         sx={{
           fontFamily: 'Display', fontSize: '50px'}}>Dashboard</Typography>
-      <DraggableGoals />  
+      <ButtonBar />
           </div>
   );
 };
