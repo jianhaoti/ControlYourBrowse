@@ -10,11 +10,13 @@ import { CssBaseline } from "@mui/material";
 import BlockedWebsites from "./blockedWebsites.js";
 import  Dashboard from './Dashboard.js';
 import './fonts.css';
+import { SoftblockProvider } from "./SoftblockContext.js";
 
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
+      <SoftblockProvider>
       <CssBaseline />
       <Router>
         <Routes>
@@ -25,6 +27,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard/>} />
         </Routes>
       </Router>
+      </SoftblockProvider>
     </ThemeProvider>
   );
 }
