@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import { useTheme } from '@mui/material';
@@ -7,7 +7,7 @@ import dragDataPlugin from 'chartjs-plugin-dragdata';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, dragDataPlugin);
 
-const data = [
+const initialData = [
   { name: 'SUN', value: 4 },
   { name: 'MON', value: 3 },
   { name: 'TUES', value: 2 },
@@ -19,7 +19,8 @@ const data = [
 
 const ChartComponent = () => {
   const theme = useTheme();
-  const [view, setView] = React.useState('dailyRevenue');
+  const [view, setView] = useState('dailyRevenue');
+  const [data, setData] = useState(initialData);
 
   const handleViewChange = (event, newView) => {
     if (newView !== null) {
@@ -55,7 +56,10 @@ const ChartComponent = () => {
         // where e = event
       },
       onDrag: function (e, datasetIndex, index, value) {
-        // where e = event
+        // Update the data directly in the chart
+        const newData = [...data];
+        newData[index].value = value;
+        setData(newData);
       },
       onDragEnd: function (e, datasetIndex, index, value) {
         // where e = event
@@ -125,4 +129,3 @@ const ChartComponent = () => {
 };
 
 export default ChartComponent;
-
