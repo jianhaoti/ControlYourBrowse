@@ -56,14 +56,14 @@ chrome.webRequest.onBeforeRedirect.addListener(
 
     chrome.storage.local.get({ domainNames: [] }, function (data) {
       const domainNames = new Set(data.domainNames);
-      //turn it into set to check for uniqueness
 
       if (domainNames.has(baseDomain)) {
-        // Save the URL to local storage
-        chrome.storage.local.set(
-          { interceptedURL: urlObj.toString() },
+        // Send the intercepted URL as a message
+        chrome.runtime.sendMessage(
+          "gmpdhjhofpdgofmlocjhdcbbobjddpmm", // Replace with your actual extension ID
+          { message: "interceptedUrl", url: urlObj.toString() },
           function () {
-            console.log("URL before redirect saved:", urlObj);
+            console.log("URL before redirect sent:", urlObj);
           }
         );
       }

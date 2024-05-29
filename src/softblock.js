@@ -5,8 +5,10 @@ import AnimatedDaisyLoad from "./AnimatedDaisyLoad";
 import TypewriterComponent from "typewriter-effect";
 import { motion } from "framer-motion";
 import ProgressBar from "./ProgressBar";
+import { useSoftblock } from "./SoftblockContext";
 
 function Softblock() {
+  const { isSoftblockOn } = useSoftblock();
   const [interceptedUrl, setInterceptedUrl] = useState("");
   const [animationComplete, setAnimationComplete] = useState(false);
   const theme = useTheme();
@@ -32,30 +34,47 @@ function Softblock() {
   };
 
   useEffect(() => {
-    const extensionId = "gmpdhjhofpdgofmlocjhdcbbobjddpmm"; // Replace with your actual extension ID
-    // Check if the Chrome APIs are available
-    if (chrome && chrome.runtime && chrome.runtime.sendMessage) {
-      chrome.runtime.sendMessage(
-        extensionId,
-        { message: "getInterceptedUrl" },
-        (response) => {
-          if (response) {
-            if (response.error) {
-              console.error("Error retrieving URL:", response.error);
-              return;
+    const initializeChromeListener = () => {
+      const extensionId = "gmpdhjhofpdgofmlocjhdcbbobjddpmm"; // Replace with your actual extension ID
+
+      if (
+        chrome &&
+        chrome.runtime &&
+        chrome.runtime.onMessageExternal &&
+        chrome.runtime.sendMessage
+      ) {
+        // Listen for the intercepted URL message
+        chrome.runtime.onMessageExternal.addListener(
+          (message, sender, sendResponse) => {
+            if (message.message === "interceptedUrl" && message.url) {
+              try {
+                // Extract the base URL
+                const url = new URL(message.url);
+                const hostname = url.hostname;
+                setInterceptedUrl(hostname);
+
+                // Navigate away if softblock isn't on
+                if (!isSoftblockOn) {
+                  window.location.href = message.url;
+                }
+              } catch (e) {
+                console.error("Invalid URL:", message.url);
+              }
             }
-            // Extract the base URL
-            const url = new URL(response.url);
-            setInterceptedUrl(url.hostname);
-          } else {
-            console.error("Chrome Extension did not respond.");
           }
-        }
-      );
-    } else {
-      console.error("Chrome API is not available");
-    }
-  }, []);
+        );
+
+        // Request the intercepted URL
+        chrome.runtime.sendMessage(extensionId, {
+          message: "getInterceptedUrl",
+        });
+      } else {
+        console.error("Chrome API is not available");
+      }
+    };
+
+    initializeChromeListener();
+  }, [isSoftblockOn]); // Only run this effect when isSoftblockOn changes
 
   const handleAnimationComplete = () => {
     setAnimationComplete(true);

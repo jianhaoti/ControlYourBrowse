@@ -3,6 +3,7 @@ import { motion, useAnimation } from "framer-motion";
 import { Box, Typography } from "@mui/material";
 import PulsatingForward from "./PulsatingForward";
 import PulsatingRewind from "./PulsatingRewind";
+import { useSoftblock } from "./SoftblockContext";
 
 const totalLength = 2400;
 
@@ -51,6 +52,7 @@ const variants = {
 
 const AnimatedDaisyLoad = ({ onAnimationComplete, interceptedUrl }) => {
   const controls = useAnimation();
+  const { setIsSoftblockOn } = useSoftblock();
 
   const [displayText, setDisplayText] = useState(false);
 
@@ -241,7 +243,8 @@ const AnimatedDaisyLoad = ({ onAnimationComplete, interceptedUrl }) => {
                 style={{ cursor: "pointer" }}
                 onClick={() => {
                   if (interceptedUrl) {
-                    window.location.href = `https://fauux.neocities.org/statue/statue11`;
+                    setIsSoftblockOn(false);
+                    window.location.href = `https://${interceptedUrl}`;
                   }
                 }}
               >
